@@ -27,7 +27,7 @@ type UseCaseRoomCreateResult struct {
 	Room *entity.Room
 }
 
-func NewUseCase(
+func NewUseCaseRoomCreate(
 	gatewayRoomCreator UseCaseRoomCreateGatewayRoomCreator,
 	gatewayNewRoomSessionsNotifier UseCaseRoomCreateGatewayNewRoomSessionsNotifier,
 ) useCaseRoomCreate {
