@@ -18,9 +18,9 @@ type (
 		Text string
 	}
 
-	ID string
+	ID int64
 )
 
-func (id ID) String() string {
-	return string(id)
+func (id ID) Int64() int64 {
+	return int64(id)
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Test_ID_String(t *testing.T) {
-	require.Equal(t, "1", ID("1").String())
-	require.NotEqual(t, "1", ID("").String())
+func Test_ID_Int64(t *testing.T) {
+	require.Equal(t, int64(1), ID(1).Int64())
+	require.NotEqual(t, int64(1), ID(0).Int64())
 }
