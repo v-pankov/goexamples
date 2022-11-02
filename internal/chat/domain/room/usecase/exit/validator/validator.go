@@ -18,18 +18,18 @@ var (
 )
 
 func New(
-	gatewaySessionFinder GatewaySessionFinder,
-	gatewayRoomFinder GatewayRoomFinder,
+	gatewayFindSession GatewayFindSession,
+	gatewayFindRoom GatewayFindRoom,
 ) ArgsValidator {
 	return argsValidator{
-		gatewaySessionFinder: gatewaySessionFinder,
-		gatewayRoomFinder:    gatewayRoomFinder,
+		gatewayFindSession: gatewayFindSession,
+		gatewayFindRoom:    gatewayFindRoom,
 	}
 }
 
 type argsValidator struct {
-	gatewaySessionFinder GatewaySessionFinder
-	gatewayRoomFinder    GatewayRoomFinder
+	gatewayFindSession GatewayFindSession
+	gatewayFindRoom    GatewayFindRoom
 }
 
 func (v argsValidator) ValidateArgs(
@@ -44,8 +44,8 @@ func (v argsValidator) ValidateArgs(
 	}
 
 	sessionEntity, err := v.
-		gatewaySessionFinder.
-		GatewayFindSession(
+		gatewayFindSession.
+		Call(
 			ctx, args.SessionID,
 		)
 	if err != nil {
@@ -57,8 +57,8 @@ func (v argsValidator) ValidateArgs(
 	}
 
 	roomEntity, err := v.
-		gatewayRoomFinder.
-		GatewayFindRoom(
+		gatewayFindRoom.
+		Call(
 			ctx, args.RoomID,
 		)
 	if err != nil {
