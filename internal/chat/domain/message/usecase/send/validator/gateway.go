@@ -7,10 +7,10 @@ import (
 	"github.com/vdrpkv/goexamples/internal/chat/domain/user"
 )
 
-type GatewayUserFinder interface {
-	GatewayFindUser(ctx context.Context, userID user.ID) (*user.Entity, error)
+type GatewayFindUser interface {
+	Call(ctx context.Context, userID user.ID) (*user.Entity, error)
 }
 
-type GatewayRoomFinder interface {
-	GatewayRoomFinder(ctx context.Context, roomID room.ID) (*room.Entity, error)
+type GatewayFindRoom interface {
+	Call(ctx context.Context, roomID room.ID) (*room.Entity, error)
 }
