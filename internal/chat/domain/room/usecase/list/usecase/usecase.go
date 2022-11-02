@@ -18,15 +18,15 @@ type UseCase interface {
 }
 
 func New(
-	gatewayRoomGetter GatewayRoomGetter,
+	gatewayGetAllRooms GatewayGetAllRooms,
 ) UseCase {
 	return useCase{
-		gatewayRoomGetter: gatewayRoomGetter,
+		gatewayGetAllRooms: gatewayGetAllRooms,
 	}
 }
 
 type useCase struct {
-	gatewayRoomGetter GatewayRoomGetter
+	gatewayGetAllRooms GatewayGetAllRooms
 }
 
 func (uc useCase) Do(
@@ -37,8 +37,8 @@ func (uc useCase) Do(
 	error,
 ) {
 	roomEntities, err := uc.
-		gatewayRoomGetter.
-		GatewayGetAllRooms(
+		gatewayGetAllRooms.
+		Call(
 			ctx,
 		)
 	if err != nil {

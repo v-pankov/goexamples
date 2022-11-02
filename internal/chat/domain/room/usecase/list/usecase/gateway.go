@@ -6,8 +6,8 @@ import (
 	"github.com/vdrpkv/goexamples/internal/chat/domain/room"
 )
 
-type GatewayRoomGetter interface {
-	GatewayGetAllRooms(
+type GatewayGetAllRooms interface {
+	Call(
 		ctx context.Context,
 	) (
 		[]room.Entity,
