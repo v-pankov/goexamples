@@ -17,6 +17,10 @@ type (
 	Name string
 )
 
+func (i ID) String() string {
+	return string(i)
+}
+
 func (n Name) String() string {
 	return string(n)
 }
