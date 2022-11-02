@@ -7,8 +7,8 @@ import (
 	"github.com/vdrpkv/goexamples/internal/chat/domain/session"
 )
 
-type GatewaySessionMessageDeliverer interface {
-	GatewayDeliverMessageToSession(
+type GatewayDeliverMessageToSession interface {
+	Call(
 		ctx context.Context,
 		sessionID session.ID,
 		message *message.Entity,
