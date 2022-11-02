@@ -18,18 +18,18 @@ type UseCase interface {
 }
 
 func New(
-	gatewayRoomCreator GatewayRoomCreator,
-	gatewayNewRoomSessionsNotifier GatewayNewRoomSessionsNotifier,
+	gatewayCreateRoom GatewayCreateRoom,
+	gatewayNotifySessionsAboutNewRoom GatewayNotifySessionsAboutNewRoom,
 ) UseCase {
 	return useCase{
-		gatewayRoomCreator:             gatewayRoomCreator,
-		gatewayNewRoomSessionsNotifier: gatewayNewRoomSessionsNotifier,
+		gatewayCreateRoom:                 gatewayCreateRoom,
+		gatewayNotifySessionsAboutNewRoom: gatewayNotifySessionsAboutNewRoom,
 	}
 }
 
 type useCase struct {
-	gatewayRoomCreator             GatewayRoomCreator
-	gatewayNewRoomSessionsNotifier GatewayNewRoomSessionsNotifier
+	gatewayCreateRoom                 GatewayCreateRoom
+	gatewayNotifySessionsAboutNewRoom GatewayNotifySessionsAboutNewRoom
 }
 
 func (uc useCase) Do(
@@ -40,8 +40,8 @@ func (uc useCase) Do(
 	error,
 ) {
 	roomEntity, err := uc.
-		gatewayRoomCreator.
-		GatewayCreateRoom(
+		gatewayCreateRoom.
+		Call(
 			ctx, args.CreatorUserID, args.RoomName,
 		)
 	if err != nil {
@@ -49,8 +49,8 @@ func (uc useCase) Do(
 	}
 
 	err = uc.
-		gatewayNewRoomSessionsNotifier.
-		GatewayNotifySessionsAboutNewRoom(
+		gatewayNotifySessionsAboutNewRoom.
+		Call(
 			ctx, roomEntity,
 		)
 	if err != nil {
