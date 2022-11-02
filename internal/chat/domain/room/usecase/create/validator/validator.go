@@ -18,18 +18,18 @@ var (
 )
 
 func NewUseCaseRoomCreateArgsValidator(
-	gatewayUserFinder GatewayUserFinder,
-	gatewayRoomFinder GatewayRoomFinder,
+	gatewayFindUser GatewayFindUser,
+	gatewayFindRoom GatewayFindRoom,
 ) ArgsValidator {
 	return argsValidator{
-		gatewayUserFinder: gatewayUserFinder,
-		gatewayRoomFinder: gatewayRoomFinder,
+		gatewayFindUser: gatewayFindUser,
+		gatewayFindRoom: gatewayFindRoom,
 	}
 }
 
 type argsValidator struct {
-	gatewayUserFinder GatewayUserFinder
-	gatewayRoomFinder GatewayRoomFinder
+	gatewayFindUser GatewayFindUser
+	gatewayFindRoom GatewayFindRoom
 }
 
 func (v argsValidator) ValidateArgs(
@@ -44,8 +44,8 @@ func (v argsValidator) ValidateArgs(
 	}
 
 	creatorUserEntity, err := v.
-		gatewayUserFinder.
-		GatewayFindUser(
+		gatewayFindUser.
+		Call(
 			ctx, args.CreatorUserID,
 		)
 	if err != nil {
@@ -57,8 +57,8 @@ func (v argsValidator) ValidateArgs(
 	}
 
 	roomEntity, err := v.
-		gatewayRoomFinder.
-		GatewayFindRoom(
+		gatewayFindRoom.
+		Call(
 			ctx, args.RoomName,
 		)
 	if err != nil {

@@ -17,15 +17,15 @@ var (
 )
 
 func New(
-	gatewaySessionFinder GatewaySessionFinder,
+	gatewayFindSession GatewayFindSession,
 ) ArgsValidator {
 	return argsValidator{
-		gatewaySessionFinder: gatewaySessionFinder,
+		gatewayFindSession: gatewayFindSession,
 	}
 }
 
 type argsValidator struct {
-	gatewaySessionFinder GatewaySessionFinder
+	gatewayFindSession GatewayFindSession
 }
 
 func (v argsValidator) ValidateArgs(
@@ -40,8 +40,8 @@ func (v argsValidator) ValidateArgs(
 	}
 
 	sessionEntity, err := v.
-		gatewaySessionFinder.
-		GatewayFindSession(
+		gatewayFindSession.
+		Call(
 			ctx, args.SessionID,
 		)
 	if err != nil {

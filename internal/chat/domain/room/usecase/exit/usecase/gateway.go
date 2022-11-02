@@ -7,8 +7,8 @@ import (
 	"github.com/vdrpkv/goexamples/internal/chat/domain/session"
 )
 
-type GatewaySessionRoomMessagesUnsubscriber interface {
-	GatewayUnsubscribeSessionForRoomMessages(
+type GatewayUnsubscribeSessionForRoomMessages interface {
+	Call(
 		ctx context.Context,
 		sessionID session.ID,
 		roomID room.ID,

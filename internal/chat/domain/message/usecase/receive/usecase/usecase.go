@@ -18,15 +18,15 @@ type UseCase interface {
 }
 
 func New(
-	gatewaySessionMessageDeliverer GatewaySessionMessageDeliverer,
+	gatewayDeliverMessageToSession GatewayDeliverMessageToSession,
 ) UseCase {
 	return useCase{
-		gatewaySessionMessageDeliverer: gatewaySessionMessageDeliverer,
+		gatewayDeliverMessageToSession: gatewayDeliverMessageToSession,
 	}
 }
 
 type useCase struct {
-	gatewaySessionMessageDeliverer GatewaySessionMessageDeliverer
+	gatewayDeliverMessageToSession GatewayDeliverMessageToSession
 }
 
 func (uc useCase) Do(
@@ -37,8 +37,8 @@ func (uc useCase) Do(
 	error,
 ) {
 	err := uc.
-		gatewaySessionMessageDeliverer.
-		GatewayDeliverMessageToSession(
+		gatewayDeliverMessageToSession.
+		Call(
 			ctx,
 			args.SessionID,
 			args.Message,

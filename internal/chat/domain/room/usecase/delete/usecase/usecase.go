@@ -18,21 +18,21 @@ type UseCase interface {
 }
 
 func New(
-	gatewaySessionsRoomMessagesUnsubscriber GatewaySessionsRoomMessagesUnsubscriber,
-	gatewayRoomDeleter GatewayRoomDeleter,
-	gatewaySessionsRoomRemovalNotifier GatewaySessionsRoomRemovalNotifier,
+	gatewayUnsubscribeSessionsFromRoomMessages GatewayUnsubscribeSessionsFromRoomMessages,
+	gatewayDeleteRoom GatewayDeleteRoom,
+	gatewayNotifySessionsAboutRemovedRoom GatewayNotifySessionsAboutRemovedRoom,
 ) UseCase {
 	return useCaseRoomDelete{
-		gatewaySessionsRoomMessagesUnsubscriber: gatewaySessionsRoomMessagesUnsubscriber,
-		gatewayRoomDeleter:                      gatewayRoomDeleter,
-		gatewaySessionsRoomRemovalNotifier:      gatewaySessionsRoomRemovalNotifier,
+		gatewayUnsubscribeSessionsFromRoomMessages: gatewayUnsubscribeSessionsFromRoomMessages,
+		gatewayDeleteRoom:                          gatewayDeleteRoom,
+		gatewayNotifySessionsAboutRemovedRoom:      gatewayNotifySessionsAboutRemovedRoom,
 	}
 }
 
 type useCaseRoomDelete struct {
-	gatewaySessionsRoomMessagesUnsubscriber GatewaySessionsRoomMessagesUnsubscriber
-	gatewayRoomDeleter                      GatewayRoomDeleter
-	gatewaySessionsRoomRemovalNotifier      GatewaySessionsRoomRemovalNotifier
+	gatewayUnsubscribeSessionsFromRoomMessages GatewayUnsubscribeSessionsFromRoomMessages
+	gatewayDeleteRoom                          GatewayDeleteRoom
+	gatewayNotifySessionsAboutRemovedRoom      GatewayNotifySessionsAboutRemovedRoom
 }
 
 func (uc useCaseRoomDelete) Do(
@@ -43,8 +43,8 @@ func (uc useCaseRoomDelete) Do(
 	error,
 ) {
 	err := uc.
-		gatewaySessionsRoomMessagesUnsubscriber.
-		GatewayUnsubscribeSessionsFromRoomMessages(
+		gatewayUnsubscribeSessionsFromRoomMessages.
+		Call(
 			ctx, args.RoomID,
 		)
 	if err != nil {
@@ -52,8 +52,8 @@ func (uc useCaseRoomDelete) Do(
 	}
 
 	err = uc.
-		gatewayRoomDeleter.
-		GatewayDeleteRoom(
+		gatewayDeleteRoom.
+		Call(
 			ctx, args.RoomID,
 		)
 	if err != nil {
@@ -61,8 +61,8 @@ func (uc useCaseRoomDelete) Do(
 	}
 
 	err = uc.
-		gatewaySessionsRoomRemovalNotifier.
-		GatewayNotifySessionsAboutRemovedRoom(
+		gatewayNotifySessionsAboutRemovedRoom.
+		Call(
 			ctx, args.RoomID,
 		)
 	if err != nil {

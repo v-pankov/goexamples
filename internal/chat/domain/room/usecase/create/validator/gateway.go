@@ -7,8 +7,8 @@ import (
 	"github.com/vdrpkv/goexamples/internal/chat/domain/user"
 )
 
-type GatewayUserFinder interface {
-	GatewayFindUser(
+type GatewayFindUser interface {
+	Call(
 		ctx context.Context,
 		userID user.ID,
 	) (
@@ -17,8 +17,8 @@ type GatewayUserFinder interface {
 	)
 }
 
-type GatewayRoomFinder interface {
-	GatewayFindRoom(
+type GatewayFindRoom interface {
+	Call(
 		ctx context.Context,
 		roomName room.Name,
 	) (

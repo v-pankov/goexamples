@@ -18,15 +18,15 @@ type UseCase interface {
 }
 
 func New(
-	gatewaySessionRoomMessagesSubscriber GatewaySessionRoomMessagesSubscriber,
+	gatewaySubscribeSessionForRoomMessages GatewaySubscribeSessionForRoomMessages,
 ) UseCase {
 	return useCase{
-		gatewaySessionRoomMessagesSubscriber: gatewaySessionRoomMessagesSubscriber,
+		gatewaySubscribeSessionForRoomMessages: gatewaySubscribeSessionForRoomMessages,
 	}
 }
 
 type useCase struct {
-	gatewaySessionRoomMessagesSubscriber GatewaySessionRoomMessagesSubscriber
+	gatewaySubscribeSessionForRoomMessages GatewaySubscribeSessionForRoomMessages
 }
 
 func (uc useCase) Do(
@@ -37,8 +37,8 @@ func (uc useCase) Do(
 	error,
 ) {
 	err := uc.
-		gatewaySessionRoomMessagesSubscriber.
-		GatewaySubscribeSessionForRoomMessages(
+		gatewaySubscribeSessionForRoomMessages.
+		Call(
 			ctx, args.SessionID, args.RoomID,
 		)
 	if err != nil {

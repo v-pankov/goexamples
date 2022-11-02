@@ -17,15 +17,15 @@ var (
 )
 
 func New(
-	gatewayRoomFinder GatewayRoomFinder,
+	gatewayFindRoom GatewayFindRoom,
 ) ArgsValidator {
 	return argsValidator{
-		gatewayRoomFinder: gatewayRoomFinder,
+		gatewayFindRoom: gatewayFindRoom,
 	}
 }
 
 type argsValidator struct {
-	gatewayRoomFinder GatewayRoomFinder
+	gatewayFindRoom GatewayFindRoom
 }
 
 func (v argsValidator) ValidateArgs(
@@ -36,8 +36,8 @@ func (v argsValidator) ValidateArgs(
 	}
 
 	roomEntity, err := v.
-		gatewayRoomFinder.
-		GatewayFindRoom(
+		gatewayFindRoom.
+		Call(
 			ctx, args.RoomID,
 		)
 	if err != nil {

@@ -7,8 +7,8 @@ import (
 	"github.com/vdrpkv/goexamples/internal/chat/domain/session"
 )
 
-type GatewaySessionFinder interface {
-	GatewayFindSession(
+type GatewayFindSession interface {
+	Call(
 		ctx context.Context, sessionID session.ID,
 	) (
 		*session.Entity,
@@ -16,8 +16,8 @@ type GatewaySessionFinder interface {
 	)
 }
 
-type GatewayRoomFinder interface {
-	GatewayFindRoom(
+type GatewayFindRoom interface {
+	Call(
 		ctx context.Context, roomID room.ID,
 	) (
 		*room.Entity,

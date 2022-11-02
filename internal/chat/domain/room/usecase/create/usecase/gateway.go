@@ -7,8 +7,8 @@ import (
 	"github.com/vdrpkv/goexamples/internal/chat/domain/user"
 )
 
-type GatewayRoomCreator interface {
-	GatewayCreateRoom(
+type GatewayCreateRoom interface {
+	Call(
 		ctx context.Context,
 		creatorUserID user.ID,
 		roomName room.Name,
@@ -18,8 +18,8 @@ type GatewayRoomCreator interface {
 	)
 }
 
-type GatewayNewRoomSessionsNotifier interface {
-	GatewayNotifySessionsAboutNewRoom(
+type GatewayNotifySessionsAboutNewRoom interface {
+	Call(
 		ctx context.Context,
 		room *room.Entity,
 	) error

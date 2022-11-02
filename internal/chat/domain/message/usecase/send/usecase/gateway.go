@@ -8,8 +8,8 @@ import (
 	"github.com/vdrpkv/goexamples/internal/chat/domain/user"
 )
 
-type GatewayMessageCreator interface {
-	GatewayCreateMessage(
+type GatewayCreateMessage interface {
+	Call(
 		ctx context.Context,
 		authorUserID user.ID,
 		roomID room.ID,
@@ -20,8 +20,8 @@ type GatewayMessageCreator interface {
 	)
 }
 
-type GatewayNewMessageSessionsNotifier interface {
-	GatewayNotifySessionsAboutNewMessage(
+type GatewayNotifySessionsAboutNewMessage interface {
+	Call(
 		ctx context.Context,
 		nessage *message.Entity,
 	) error

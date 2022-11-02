@@ -6,20 +6,20 @@ import (
 	"github.com/vdrpkv/goexamples/internal/chat/domain/room"
 )
 
-type GatewaySessionsRoomMessagesUnsubscriber interface {
-	GatewayUnsubscribeSessionsFromRoomMessages(
+type GatewayUnsubscribeSessionsFromRoomMessages interface {
+	Call(
 		ctx context.Context, roomID room.ID,
 	) error
 }
 
-type GatewayRoomDeleter interface {
-	GatewayDeleteRoom(
+type GatewayDeleteRoom interface {
+	Call(
 		ctx context.Context, roomID room.ID,
 	) error
 }
 
-type GatewaySessionsRoomRemovalNotifier interface {
-	GatewayNotifySessionsAboutRemovedRoom(
+type GatewayNotifySessionsAboutRemovedRoom interface {
+	Call(
 		ctx context.Context, roomID room.ID,
 	) error
 }
