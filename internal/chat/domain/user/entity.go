@@ -2,6 +2,7 @@ package user
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/vdrpkv/goexamples/internal/pkg/entity"
 )
@@ -35,5 +36,10 @@ func (n Name) Validate() error {
 	if n == "" {
 		return ErrEmptyName
 	}
+
+	if len(strings.TrimSpace(string(n))) == 0 {
+		return ErrEmptyName
+	}
+
 	return nil
 }
