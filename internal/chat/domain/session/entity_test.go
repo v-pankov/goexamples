@@ -6,10 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestValidateID(t *testing.T) {
-	validID := ID("123")
-	require.NoError(t, validID.Validate(), "valid ID must be validated successfuly")
-
-	emptyID := ID("")
-	require.ErrorIs(t, emptyID.Validate(), ErrEmptyID, "empty ID must fail validation check")
+func Test_ID_String(t *testing.T) {
+	require.Equal(t, "1", ID("1").String())
+	require.NotEqual(t, "1", ID("").String())
 }

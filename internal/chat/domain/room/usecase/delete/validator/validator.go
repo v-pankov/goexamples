@@ -31,10 +31,6 @@ type argsValidator struct {
 func (v argsValidator) ValidateArgs(
 	ctx context.Context, args *delete.Args,
 ) error {
-	if err := args.RoomID.Validate(); err != nil {
-		return fmt.Errorf("room id: %w", err)
-	}
-
 	roomEntity, err := v.
 		gatewayFindRoom.
 		Call(

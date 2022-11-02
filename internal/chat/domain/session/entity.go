@@ -1,8 +1,6 @@
 package session
 
 import (
-	"errors"
-
 	"github.com/vdrpkv/goexamples/internal/chat/domain/user"
 	"github.com/vdrpkv/goexamples/internal/pkg/entity"
 )
@@ -18,13 +16,6 @@ type (
 	ID string
 )
 
-var (
-	ErrEmptyID = errors.New("id is empty")
-)
-
-func (id ID) Validate() error {
-	if id == "" {
-		return ErrEmptyID
-	}
-	return nil
+func (id ID) String() string {
+	return string(id)
 }

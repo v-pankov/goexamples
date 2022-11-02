@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/vdrpkv/goexamples/internal/chat/domain/room/usecase/create"
 )
@@ -13,6 +14,7 @@ type ArgsValidator interface {
 }
 
 var (
+	ErrEmptyRoomName       = errors.New("room name is empty")
 	ErrNotFoundCreatorUser = errors.New("creator user is not found")
 	ErrNotUniqueRoomName   = errors.New("room name is not unique")
 )
@@ -35,12 +37,8 @@ type argsValidator struct {
 func (v argsValidator) ValidateArgs(
 	ctx context.Context, args *create.Args,
 ) error {
-	if err := args.CreatorUserID.Validate(); err != nil {
-		return fmt.Errorf("creator user id: %w", err)
-	}
-
-	if err := args.RoomName.Validate(); err != nil {
-		return fmt.Errorf("room name: %w", err)
+	if len(strings.TrimSpace(args.RoomName.String())) == 0 {
+		return ErrEmptyRoomName
 	}
 
 	creatorUserEntity, err := v.

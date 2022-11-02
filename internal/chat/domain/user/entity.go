@@ -17,8 +17,8 @@ type (
 	Name string
 )
 
-func (i ID) String() string {
-	return string(i)
+func (id ID) String() string {
+	return string(id)
 }
 
 func (n Name) String() string {

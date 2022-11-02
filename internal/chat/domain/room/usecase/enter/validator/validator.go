@@ -35,14 +35,6 @@ type argsValidator struct {
 func (v argsValidator) ValidateArgs(
 	ctx context.Context, args *enter.Args,
 ) error {
-	if err := args.SessionID.Validate(); err != nil {
-		return fmt.Errorf("session id: %w", err)
-	}
-
-	if err := args.RoomID.Validate(); err != nil {
-		return fmt.Errorf("room id: %w", err)
-	}
-
 	sessionEntity, err := v.
 		gatewayFindSession.
 		Call(

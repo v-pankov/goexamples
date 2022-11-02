@@ -35,14 +35,6 @@ type argsValidator struct {
 func (v argsValidator) ValidateArgs(
 	ctx context.Context, args *send.Args,
 ) error {
-	if err := args.AuthorUserID.Validate(); err != nil {
-		return fmt.Errorf("author user id: %w", err)
-	}
-
-	if err := args.RoomID.Validate(); err != nil {
-		return fmt.Errorf("room id: %w", err)
-	}
-
 	authorUserEntity, err := v.
 		gatewayFindUser.
 		Call(
