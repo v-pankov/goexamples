@@ -36,7 +36,7 @@ func (uc useCase) Do(
 	*enter.Result,
 	error,
 ) {
-	err := uc.
+	messages, err := uc.
 		gatewaySubscribeSessionForRoomMessages.
 		Call(
 			ctx, args.SessionID, args.RoomID,
@@ -45,5 +45,7 @@ func (uc useCase) Do(
 		return nil, fmt.Errorf("subscribe session for room messages: %w", err)
 	}
 
-	return &enter.Result{}, nil
+	return &enter.Result{
+		Messages: messages,
+	}, nil
 }
