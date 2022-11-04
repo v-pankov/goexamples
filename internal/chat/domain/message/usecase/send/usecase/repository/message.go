@@ -1,4 +1,4 @@
-package usecase
+package repository
 
 import (
 	"context"
@@ -7,8 +7,8 @@ import (
 	"github.com/vdrpkv/goexamples/internal/chat/domain/user"
 )
 
-type GatewayCreateMessage interface {
-	Call(
+type MessageCreator interface {
+	CreateMessage(
 		ctx context.Context,
 		authorUserID user.ID,
 		messageText string,
@@ -16,11 +16,4 @@ type GatewayCreateMessage interface {
 		*message.Entity,
 		error,
 	)
-}
-
-type GatewayNotifySessionsAboutNewMessage interface {
-	Call(
-		ctx context.Context,
-		nessage *message.Entity,
-	) error
 }
