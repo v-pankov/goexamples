@@ -18,18 +18,15 @@ type UseCase interface {
 }
 
 func New(
-	gatewayCreateOrFindUser GatewayCreateOrFindUser,
-	gatewayCreateSession GatewayCreateSession,
+	repository Repository,
 ) UseCase {
 	return useCase{
-		gatewayCreateOrFindUser: gatewayCreateOrFindUser,
-		gatewayCreateSession:    gatewayCreateSession,
+		repository: repository,
 	}
 }
 
 type useCase struct {
-	gatewayCreateOrFindUser GatewayCreateOrFindUser
-	gatewayCreateSession    GatewayCreateSession
+	repository Repository
 }
 
 func (uc useCase) Do(
@@ -39,20 +36,12 @@ func (uc useCase) Do(
 	*enter.Result,
 	error,
 ) {
-	userEntity, err := uc.
-		gatewayCreateOrFindUser.
-		Call(
-			ctx, args.UserName,
-		)
+	userEntity, err := uc.repository.CreateOrFindUser(ctx, args.UserName)
 	if err != nil {
 		return nil, fmt.Errorf("create or find user [%s]: %w", args.UserName, err)
 	}
 
-	sessionEntity, err := uc.
-		gatewayCreateSession.
-		Call(
-			ctx, userEntity.ID,
-		)
+	sessionEntity, err := uc.repository.CreateSession(ctx, userEntity.ID)
 	if err != nil {
 		return nil, fmt.Errorf("create session: %w", err)
 	}

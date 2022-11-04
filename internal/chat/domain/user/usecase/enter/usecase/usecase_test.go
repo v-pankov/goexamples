@@ -14,17 +14,17 @@ import (
 
 func TestUseCase(t *testing.T) {
 	type (
-		gatewayCreateOrFindUserStub struct {
+		createOrFindUserStub struct {
 			err error
 		}
 
-		gatewayCreateSessionStub struct {
+		createSessionStub struct {
 			err error
 		}
 
 		testCaseGiveStubs struct {
-			gatewayCreateOrFindUser gatewayCreateOrFindUserStub
-			gatewayCreateSession    gatewayCreateSessionStub
+			createOrFindUser createOrFindUserStub
+			createSession    createSessionStub
 		}
 
 		testCaseGive struct {
@@ -57,9 +57,9 @@ func TestUseCase(t *testing.T) {
 			ID: "stubSessionEntityID",
 		}
 
-		stubErrGatewayCreateOrFindUser = errors.New("GatewayCreateOrFindUser error")
+		stubErrRepositoryCreateOrFindUser = errors.New("GatewayRepository CreateOrFindUser error")
 
-		stubErrGatewayCreateSession = errors.New("GatewayCreateSession error")
+		stubErrRepositoryCreateSession = errors.New("Repository CreateSession error")
 	)
 
 	testCases := []testCase{
@@ -69,80 +69,90 @@ func TestUseCase(t *testing.T) {
 			testCaseWant{},
 		},
 		{
-			"GatewayCreateOrFindUser fails",
+			"Repository CreateOrFindUser error",
 			testCaseGive{
 				stubs: testCaseGiveStubs{
-					gatewayCreateOrFindUser: gatewayCreateOrFindUserStub{
-						err: stubErrGatewayCreateOrFindUser,
+					createOrFindUser: createOrFindUserStub{
+						err: stubErrRepositoryCreateOrFindUser,
 					},
 				},
 			},
 			testCaseWant{
-				err: stubErrGatewayCreateOrFindUser,
+				err: stubErrRepositoryCreateOrFindUser,
 			},
 		},
 		{
-			"GatewayCreateSession fails",
+			"Repository CreateSession error",
 			testCaseGive{
 				stubs: testCaseGiveStubs{
-					gatewayCreateSession: gatewayCreateSessionStub{
-						err: stubErrGatewayCreateSession,
+					createSession: createSessionStub{
+						err: stubErrRepositoryCreateSession,
 					},
 				},
 			},
 			testCaseWant{
-				err: stubErrGatewayCreateSession,
+				err: stubErrRepositoryCreateSession,
 			},
 		},
 		{
-			"GatewayCreateOrFindUser and GatewayCreateSession fail",
+			"Repository CreateOrFindUser and CreateSession erros",
 			testCaseGive{
 				stubs: testCaseGiveStubs{
-					gatewayCreateOrFindUser: gatewayCreateOrFindUserStub{
-						err: stubErrGatewayCreateOrFindUser,
+					createOrFindUser: createOrFindUserStub{
+						err: stubErrRepositoryCreateOrFindUser,
 					},
-					gatewayCreateSession: gatewayCreateSessionStub{
-						err: stubErrGatewayCreateSession,
+					createSession: createSessionStub{
+						err: stubErrRepositoryCreateSession,
 					},
 				},
 			},
 			testCaseWant{
-				err: stubErrGatewayCreateOrFindUser,
+				err: stubErrRepositoryCreateOrFindUser,
 			},
 		},
 	}
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			// Setup GatewayCreateOrFindUser expectations
 			var (
-				gatewayCreateOrFindUserMock     = mocks.NewGatewayCreateOrFindUser(t)
-				gatewayCreateOrFindUserMockCall = gatewayCreateOrFindUserMock.On("Call", stubCtx, stubArgs.UserName)
+				repository = mocks.NewRepository(t)
+				useCase    = New(repository)
 			)
-			if testCase.give.stubs.gatewayCreateOrFindUser.err == nil {
-				gatewayCreateOrFindUserMockCall.Return(stubUserEntity, nil)
-			} else {
-				gatewayCreateOrFindUserMockCall.Return(nil, testCase.give.stubs.gatewayCreateOrFindUser.err)
-			}
 
-			// Setup GatewayCreateSession expectations
-			var (
-				gatewayCreateSessionMock = mocks.NewGatewayCreateSession(t)
-			)
-			// Expect GatewayCreateSession call when GatewayCreateOrFindUser is expected to succeed.
-			if testCase.give.stubs.gatewayCreateOrFindUser.err == nil {
-				gatewayCreateSessionMockCall := gatewayCreateSessionMock.On("Call", stubCtx, stubUserEntity.ID)
-				if testCase.give.stubs.gatewayCreateSession.err == nil {
-					gatewayCreateSessionMockCall.Return(stubSessionEntity, nil)
-				} else {
-					gatewayCreateSessionMockCall.Return(nil, testCase.give.stubs.gatewayCreateSession.err)
+			// Setup stubs for CreateOrFindUser
+			repositoryCreateOrFindUserCall := repository.
+				On("CreateOrFindUser", stubCtx, stubArgs.UserName).
+				Once()
+			{
+				var (
+					returnError = testCase.give.stubs.createOrFindUser.err
+					returnValue *user.Entity
+				)
+
+				if returnError == nil {
+					returnValue = stubUserEntity
 				}
+
+				repositoryCreateOrFindUserCall.Return(returnValue, returnError)
 			}
 
-			useCase := New(
-				gatewayCreateOrFindUserMock,
-				gatewayCreateSessionMock,
-			)
+			// Setup stubs for CreateSession when CreateOrFindUser is expected to be called
+			if testCase.give.stubs.createOrFindUser.err == nil {
+				repositoryCreateSessionCall := repository.
+					On("CreateSession", stubCtx, stubUserEntity.ID).
+					NotBefore(repositoryCreateOrFindUserCall)
+
+				var (
+					returnError = testCase.give.stubs.createSession.err
+					returnValue *session.Entity
+				)
+
+				if returnError == nil {
+					returnValue = stubSessionEntity
+				}
+
+				repositoryCreateSessionCall.Return(returnValue, returnError)
+			}
 
 			gotResult, gotErr := useCase.Do(stubCtx, stubArgs)
 			if testCase.want.err == nil {
