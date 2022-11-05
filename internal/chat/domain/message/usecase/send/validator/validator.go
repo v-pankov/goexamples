@@ -9,8 +9,7 @@ import (
 )
 
 var (
-	ErrNotFoundAuthorUser = errors.New("author user is not found")
-	ErrNotFoundRoom       = errors.New("room is not found")
+	ErrNotFoundAuthorUserSession = errors.New("author user session is not found")
 )
 
 type ArgsValidator interface {
@@ -18,31 +17,27 @@ type ArgsValidator interface {
 }
 
 func New(
-	gatewayFindUser GatewayFindUser,
+	repository Repository,
 ) ArgsValidator {
 	return argsValidator{
-		gatewayFindUser: gatewayFindUser,
+		repository: repository,
 	}
 }
 
 type argsValidator struct {
-	gatewayFindUser GatewayFindUser
+	repository Repository
 }
 
 func (v argsValidator) ValidateArgs(
 	ctx context.Context, args *send.Args,
 ) error {
-	authorUserEntity, err := v.
-		gatewayFindUser.
-		Call(
-			ctx, args.AuthorUserID,
-		)
+	authorUserSessionEntity, err := v.repository.FindSession(ctx, args.AuthorUserSessionID)
 	if err != nil {
-		return fmt.Errorf("find author user: %w", err)
+		return fmt.Errorf("find author user session: %w", err)
 	}
 
-	if authorUserEntity == nil {
-		return ErrNotFoundAuthorUser
+	if authorUserSessionEntity == nil {
+		return ErrNotFoundAuthorUserSession
 	}
 
 	return nil

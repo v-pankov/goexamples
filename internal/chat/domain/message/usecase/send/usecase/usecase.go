@@ -12,18 +12,18 @@ type UseCase interface {
 }
 
 func New(
-	gatewayCreateMessage GatewayCreateMessage,
-	gatewayNotifySessionsAboutNewMessage GatewayNotifySessionsAboutNewMessage,
+	messageBus MessageBus,
+	repository Repository,
 ) UseCase {
 	return useCase{
-		gatewayCreateMessage:                 gatewayCreateMessage,
-		gatewayNotifySessionsAboutNewMessage: gatewayNotifySessionsAboutNewMessage,
+		messageBus: messageBus,
+		repository: repository,
 	}
 }
 
 type useCase struct {
-	gatewayCreateMessage                 GatewayCreateMessage
-	gatewayNotifySessionsAboutNewMessage GatewayNotifySessionsAboutNewMessage
+	messageBus MessageBus
+	repository Repository
 }
 
 func (uc useCase) Do(
@@ -33,24 +33,21 @@ func (uc useCase) Do(
 	*send.Result,
 	error,
 ) {
-	messageEntity, err := uc.
-		gatewayCreateMessage.
-		Call(
-			ctx,
-			args.AuthorUserID,
-			args.MessageText,
-		)
+
+	messageEntity, err := uc.repository.CreateMessage(
+		ctx,
+		args.AuthorUserSessionID,
+		args.MessageText,
+	)
+
 	if err != nil {
 		return nil, fmt.Errorf("create message: %w", err)
 	}
 
-	err = uc.
-		gatewayNotifySessionsAboutNewMessage.
-		Call(
-			ctx, messageEntity,
-		)
+	err = uc.messageBus.BroadcastMessageToAllSessions(ctx, messageEntity)
+
 	if err != nil {
-		return nil, fmt.Errorf("notify sessions about new message: %w", err)
+		return nil, fmt.Errorf("broadcast message to all sessions: %w", err)
 	}
 
 	return &send.Result{}, nil

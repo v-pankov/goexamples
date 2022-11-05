@@ -18,18 +18,18 @@ type UseCase interface {
 }
 
 func New(
-	gatewayCreateOrFindUser GatewayCreateOrFindUser,
-	gatewayCreateSession GatewayCreateSession,
+	msgbus MessageBus,
+	repository Repository,
 ) UseCase {
 	return useCase{
-		gatewayCreateOrFindUser: gatewayCreateOrFindUser,
-		gatewayCreateSession:    gatewayCreateSession,
+		msgbus:     msgbus,
+		repository: repository,
 	}
 }
 
 type useCase struct {
-	gatewayCreateOrFindUser GatewayCreateOrFindUser
-	gatewayCreateSession    GatewayCreateSession
+	msgbus     MessageBus
+	repository Repository
 }
 
 func (uc useCase) Do(
@@ -39,25 +39,23 @@ func (uc useCase) Do(
 	*enter.Result,
 	error,
 ) {
-	userEntity, err := uc.
-		gatewayCreateOrFindUser.
-		Call(
-			ctx, args.UserName,
-		)
+	userEntity, err := uc.repository.CreateOrFindUser(ctx, args.UserName)
 	if err != nil {
 		return nil, fmt.Errorf("create or find user [%s]: %w", args.UserName, err)
 	}
 
-	sessionEntity, err := uc.
-		gatewayCreateSession.
-		Call(
-			ctx, userEntity.ID,
-		)
+	sessionEntity, err := uc.repository.CreateActiveSession(ctx, userEntity.ID)
 	if err != nil {
-		return nil, fmt.Errorf("create session: %w", err)
+		return nil, fmt.Errorf("create active session: %w", err)
+	}
+
+	messages, err := uc.msgbus.SubscribeSessionForNewMessages(ctx, sessionEntity.ID)
+	if err != nil {
+		return nil, fmt.Errorf("subscribe for new messages: %w", err)
 	}
 
 	return &enter.Result{
+		Messages:  messages,
 		SessionID: sessionEntity.ID,
 	}, nil
 }

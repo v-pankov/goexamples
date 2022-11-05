@@ -1,10 +1,9 @@
-package send
+package exit
 
 import "github.com/vdrpkv/goexamples/internal/chat/domain/session"
 
 type Args struct {
-	AuthorUserSessionID session.ID
-	MessageText         string
+	SessionID session.ID
 }
 
 type Result struct {

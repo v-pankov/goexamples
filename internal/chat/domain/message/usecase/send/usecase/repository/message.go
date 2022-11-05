@@ -1,4 +1,4 @@
-package usecase
+package repository
 
 import (
 	"context"
@@ -7,10 +7,13 @@ import (
 	"github.com/vdrpkv/goexamples/internal/chat/domain/session"
 )
 
-type GatewayDeliverMessageToSession interface {
-	Call(
+type MessageCreator interface {
+	CreateMessage(
 		ctx context.Context,
-		sessionID session.ID,
-		message *message.Entity,
-	) error
+		authorUserSessionID session.ID,
+		messageText string,
+	) (
+		*message.Entity,
+		error,
+	)
 }
