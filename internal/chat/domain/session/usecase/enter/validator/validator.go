@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/vdrpkv/goexamples/internal/chat/domain/user/usecase/enter"
+	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/enter"
 )
 
 type ArgsValidator interface {

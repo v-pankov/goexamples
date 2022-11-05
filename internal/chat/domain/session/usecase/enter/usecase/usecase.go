@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/vdrpkv/goexamples/internal/chat/domain/user/usecase/enter"
+	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/enter"
 )
 
 type UseCase interface {

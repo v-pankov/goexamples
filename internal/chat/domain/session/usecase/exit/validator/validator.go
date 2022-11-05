@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/vdrpkv/goexamples/internal/chat/domain/user/usecase/exit"
+	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/exit"
 )
 
 type ArgsValidator interface {

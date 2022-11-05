@@ -8,10 +8,10 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/vdrpkv/goexamples/internal/chat/domain/message"
 	"github.com/vdrpkv/goexamples/internal/chat/domain/session"
+	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/enter"
+	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/enter/usecase"
+	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/enter/usecase/mocks"
 	"github.com/vdrpkv/goexamples/internal/chat/domain/user"
-	"github.com/vdrpkv/goexamples/internal/chat/domain/user/usecase/enter"
-	"github.com/vdrpkv/goexamples/internal/chat/domain/user/usecase/enter/usecase"
-	"github.com/vdrpkv/goexamples/internal/chat/domain/user/usecase/enter/usecase/mocks"
 )
 
 var testCases = []testCase{

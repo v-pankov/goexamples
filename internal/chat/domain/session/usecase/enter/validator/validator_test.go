@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/vdrpkv/goexamples/internal/chat/domain/user/usecase/enter"
+	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/enter"
 )
 
 func TestArgsValidator(t *testing.T) {
