@@ -44,10 +44,10 @@ func (uc useCase) Do(
 		return nil, fmt.Errorf("create message: %w", err)
 	}
 
-	err = uc.messageBus.BroadcastMessageInARoom(ctx, messageEntity)
+	err = uc.messageBus.BroadcastMessageToAllSessions(ctx, messageEntity)
 
 	if err != nil {
-		return nil, fmt.Errorf("notify sessions about new message: %w", err)
+		return nil, fmt.Errorf("broadcast message to all sessions: %w", err)
 	}
 
 	return &send.Result{}, nil
