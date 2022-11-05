@@ -26,14 +26,7 @@ type useCase struct {
 	repository Repository
 }
 
-func (uc useCase) Do(
-	ctx context.Context,
-	args *send.Args,
-) (
-	*send.Result,
-	error,
-) {
-
+func (uc useCase) Do(ctx context.Context, args *send.Args) (*send.Result, error) {
 	messageEntity, err := uc.repository.CreateMessage(
 		ctx,
 		args.AuthorUserSessionID,

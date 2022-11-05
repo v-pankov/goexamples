@@ -8,13 +8,7 @@ import (
 )
 
 type UseCase interface {
-	Do(
-		ctx context.Context,
-		args *logout.Args,
-	) (
-		*logout.Result,
-		error,
-	)
+	Do(ctx context.Context, args *logout.Args) (*logout.Result, error)
 }
 
 func New(
@@ -32,13 +26,7 @@ type useCase struct {
 	repository Repository
 }
 
-func (uc useCase) Do(
-	ctx context.Context,
-	args *logout.Args,
-) (
-	*logout.Result,
-	error,
-) {
+func (uc useCase) Do(ctx context.Context, args *logout.Args) (*logout.Result, error) {
 	if err := uc.msgbus.UnsubscribeSessionFromNewMessages(ctx, args.SessionID); err != nil {
 		return nil, fmt.Errorf("unsubsribe session from new messages: %w", err)
 	}

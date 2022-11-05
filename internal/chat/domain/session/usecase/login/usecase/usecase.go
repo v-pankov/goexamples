@@ -8,13 +8,7 @@ import (
 )
 
 type UseCase interface {
-	Do(
-		ctx context.Context,
-		args *login.Args,
-	) (
-		*login.Result,
-		error,
-	)
+	Do(ctx context.Context, args *login.Args) (*login.Result, error)
 }
 
 func New(
@@ -32,13 +26,7 @@ type useCase struct {
 	repository Repository
 }
 
-func (uc useCase) Do(
-	ctx context.Context,
-	args *login.Args,
-) (
-	*login.Result,
-	error,
-) {
+func (uc useCase) Do(ctx context.Context, args *login.Args) (*login.Result, error) {
 	userEntity, err := uc.repository.CreateOrFindUser(ctx, args.UserName)
 	if err != nil {
 		return nil, fmt.Errorf("create or find user [%s]: %w", args.UserName, err)
