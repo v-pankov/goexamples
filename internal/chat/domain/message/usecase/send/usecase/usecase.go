@@ -12,18 +12,18 @@ type UseCase interface {
 }
 
 func New(
-	repository Repository,
 	messageBus MessageBus,
+	repository Repository,
 ) UseCase {
 	return useCase{
-		repository: repository,
 		messageBus: messageBus,
+		repository: repository,
 	}
 }
 
 type useCase struct {
-	repository Repository
 	messageBus MessageBus
+	repository Repository
 }
 
 func (uc useCase) Do(
