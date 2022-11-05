@@ -1,6 +1,7 @@
 package enter
 
 import (
+	"github.com/vdrpkv/goexamples/internal/chat/domain/message"
 	"github.com/vdrpkv/goexamples/internal/chat/domain/session"
 	"github.com/vdrpkv/goexamples/internal/chat/domain/user"
 )
@@ -10,5 +11,6 @@ type Args struct {
 }
 
 type Result struct {
+	Messages  <-chan *message.Entity
 	SessionID session.ID
 }

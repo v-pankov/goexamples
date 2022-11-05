@@ -5,7 +5,9 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
+	"github.com/vdrpkv/goexamples/internal/chat/domain/message"
 	"github.com/vdrpkv/goexamples/internal/chat/domain/session"
 	"github.com/vdrpkv/goexamples/internal/chat/domain/user"
 	"github.com/vdrpkv/goexamples/internal/chat/domain/user/usecase/enter"
@@ -22,9 +24,22 @@ func TestUseCase(t *testing.T) {
 			err error
 		}
 
-		testCaseGiveStubs struct {
+		testCaseGiveStubsRepository struct {
 			createOrFindUser createOrFindUserStub
 			createSession    createSessionStub
+		}
+
+		subscribeForNewMessagesStub struct {
+			err error
+		}
+
+		testCaseGiveStubsMessageBus struct {
+			subscribeForNewMessages subscribeForNewMessagesStub
+		}
+
+		testCaseGiveStubs struct {
+			repository testCaseGiveStubsRepository
+			messageBus testCaseGiveStubsMessageBus
 		}
 
 		testCaseGive struct {
@@ -57,9 +72,13 @@ func TestUseCase(t *testing.T) {
 			ID: "stubSessionEntityID",
 		}
 
+		stubMessages = make(chan *message.Entity)
+
 		stubErrRepositoryCreateOrFindUser = errors.New("GatewayRepository CreateOrFindUser error")
 
 		stubErrRepositoryCreateSession = errors.New("Repository CreateSession error")
+
+		stubErrMessageBusSubscribeForNewMessages = errors.New("MessageBus SubscribeForNewMessages error")
 	)
 
 	testCases := []testCase{
@@ -72,8 +91,51 @@ func TestUseCase(t *testing.T) {
 			"Repository CreateOrFindUser error",
 			testCaseGive{
 				stubs: testCaseGiveStubs{
-					createOrFindUser: createOrFindUserStub{
-						err: stubErrRepositoryCreateOrFindUser,
+					repository: testCaseGiveStubsRepository{
+						createOrFindUser: createOrFindUserStub{
+							err: stubErrRepositoryCreateOrFindUser,
+						},
+					},
+				},
+			},
+			testCaseWant{
+				err: stubErrRepositoryCreateOrFindUser,
+			},
+		},
+		{
+			"Repository CreateOrFindUser and CreateSession erros",
+			testCaseGive{
+				stubs: testCaseGiveStubs{
+					repository: testCaseGiveStubsRepository{
+						createOrFindUser: createOrFindUserStub{
+							err: stubErrRepositoryCreateOrFindUser,
+						},
+						createSession: createSessionStub{
+							err: stubErrRepositoryCreateSession,
+						},
+					},
+				},
+			},
+			testCaseWant{
+				err: stubErrRepositoryCreateOrFindUser,
+			},
+		},
+		{
+			"Repository CreateOrFindUser and CreateSession and MesageBus SubscribeForNewMessages erros",
+			testCaseGive{
+				stubs: testCaseGiveStubs{
+					repository: testCaseGiveStubsRepository{
+						createOrFindUser: createOrFindUserStub{
+							err: stubErrRepositoryCreateOrFindUser,
+						},
+						createSession: createSessionStub{
+							err: stubErrRepositoryCreateSession,
+						},
+					},
+					messageBus: testCaseGiveStubsMessageBus{
+						subscribeForNewMessages: subscribeForNewMessagesStub{
+							err: stubErrMessageBusSubscribeForNewMessages,
+						},
 					},
 				},
 			},
@@ -85,8 +147,10 @@ func TestUseCase(t *testing.T) {
 			"Repository CreateSession error",
 			testCaseGive{
 				stubs: testCaseGiveStubs{
-					createSession: createSessionStub{
-						err: stubErrRepositoryCreateSession,
+					repository: testCaseGiveStubsRepository{
+						createSession: createSessionStub{
+							err: stubErrRepositoryCreateSession,
+						},
 					},
 				},
 			},
@@ -95,19 +159,38 @@ func TestUseCase(t *testing.T) {
 			},
 		},
 		{
-			"Repository CreateOrFindUser and CreateSession erros",
+			"Repository CreateSession and MessageBus SubscribeForNewMessages errors",
 			testCaseGive{
 				stubs: testCaseGiveStubs{
-					createOrFindUser: createOrFindUserStub{
-						err: stubErrRepositoryCreateOrFindUser,
+					repository: testCaseGiveStubsRepository{
+						createSession: createSessionStub{
+							err: stubErrRepositoryCreateSession,
+						},
 					},
-					createSession: createSessionStub{
-						err: stubErrRepositoryCreateSession,
+					messageBus: testCaseGiveStubsMessageBus{
+						subscribeForNewMessages: subscribeForNewMessagesStub{
+							err: stubErrMessageBusSubscribeForNewMessages,
+						},
 					},
 				},
 			},
 			testCaseWant{
-				err: stubErrRepositoryCreateOrFindUser,
+				err: stubErrRepositoryCreateSession,
+			},
+		},
+		{
+			"MessageBus SubscribeForNewMessages error",
+			testCaseGive{
+				stubs: testCaseGiveStubs{
+					messageBus: testCaseGiveStubsMessageBus{
+						subscribeForNewMessages: subscribeForNewMessagesStub{
+							err: stubErrMessageBusSubscribeForNewMessages,
+						},
+					},
+				},
+			},
+			testCaseWant{
+				err: stubErrMessageBusSubscribeForNewMessages,
 			},
 		},
 	}
@@ -115,17 +198,18 @@ func TestUseCase(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			var (
+				messageBus = mocks.NewMessageBus(t)
 				repository = mocks.NewRepository(t)
-				useCase    = New(repository)
+				useCase    = New(messageBus, repository)
 			)
 
-			// Setup stubs for CreateOrFindUser
+			// Setup stubs for Repository CreateOrFindUser
 			repositoryCreateOrFindUserCall := repository.
 				On("CreateOrFindUser", stubCtx, stubArgs.UserName).
 				Once()
 			{
 				var (
-					returnError = testCase.give.stubs.createOrFindUser.err
+					returnError = testCase.give.stubs.repository.createOrFindUser.err
 					returnValue *user.Entity
 				)
 
@@ -136,14 +220,15 @@ func TestUseCase(t *testing.T) {
 				repositoryCreateOrFindUserCall.Return(returnValue, returnError)
 			}
 
-			// Setup stubs for CreateSession when CreateOrFindUser is expected to be called
-			if testCase.give.stubs.createOrFindUser.err == nil {
-				repositoryCreateSessionCall := repository.
+			// Setup stubs for Repository CreateSession when CreateOrFindUser is expected to be called
+			var repositoryCreateSessionCall *mock.Call
+			if testCase.give.stubs.repository.createOrFindUser.err == nil {
+				repositoryCreateSessionCall = repository.
 					On("CreateSession", stubCtx, stubUserEntity.ID).
 					NotBefore(repositoryCreateOrFindUserCall)
 
 				var (
-					returnError = testCase.give.stubs.createSession.err
+					returnError = testCase.give.stubs.repository.createSession.err
 					returnValue *session.Entity
 				)
 
@@ -154,10 +239,30 @@ func TestUseCase(t *testing.T) {
 				repositoryCreateSessionCall.Return(returnValue, returnError)
 			}
 
+			// Setup stubs for MessageBus SubscribeForNewMessages when Repository
+			// CreateOrFindUser and CreateSession are expected to be called.
+			if testCase.give.stubs.repository.createOrFindUser.err == nil && testCase.give.stubs.repository.createSession.err == nil {
+				messageBusSubscribeForNewMessagesCall := messageBus.
+					On("SubscribeForNewMessages", stubCtx, stubSessionEntity.ID).
+					NotBefore(repositoryCreateOrFindUserCall).
+					NotBefore(repositoryCreateSessionCall)
+
+				var (
+					returnError = testCase.give.stubs.messageBus.subscribeForNewMessages.err
+					returnValue <-chan *message.Entity
+				)
+
+				if returnError == nil {
+					returnValue = stubMessages
+				}
+
+				messageBusSubscribeForNewMessagesCall.Return(returnValue, returnError)
+			}
+
 			gotResult, gotErr := useCase.Do(stubCtx, stubArgs)
 			if testCase.want.err == nil {
 				require.NoError(t, gotErr)
-				require.Equal(t, &enter.Result{SessionID: stubSessionEntity.ID}, gotResult)
+				require.Equal(t, &enter.Result{Messages: stubMessages, SessionID: stubSessionEntity.ID}, gotResult)
 			} else {
 				require.ErrorIs(t, gotErr, testCase.want.err)
 				require.Nil(t, gotResult)

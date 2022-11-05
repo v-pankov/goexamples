@@ -18,14 +18,17 @@ type UseCase interface {
 }
 
 func New(
+	msgbus MessageBus,
 	repository Repository,
 ) UseCase {
 	return useCase{
+		msgbus:     msgbus,
 		repository: repository,
 	}
 }
 
 type useCase struct {
+	msgbus     MessageBus
 	repository Repository
 }
 
@@ -46,7 +49,13 @@ func (uc useCase) Do(
 		return nil, fmt.Errorf("create session: %w", err)
 	}
 
+	messages, err := uc.msgbus.SubscribeForNewMessages(ctx, sessionEntity.ID)
+	if err != nil {
+		return nil, fmt.Errorf("subscribe for new messages: %w", err)
+	}
+
 	return &enter.Result{
+		Messages:  messages,
 		SessionID: sessionEntity.ID,
 	}, nil
 }
