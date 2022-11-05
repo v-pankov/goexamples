@@ -19,17 +19,14 @@ type ArgsValidator interface {
 
 func New(
 	gatewayFindUser GatewayFindUser,
-	gatewayFindRoom GatewayFindRoom,
 ) ArgsValidator {
 	return argsValidator{
 		gatewayFindUser: gatewayFindUser,
-		gatewayFindRoom: gatewayFindRoom,
 	}
 }
 
 type argsValidator struct {
 	gatewayFindUser GatewayFindUser
-	gatewayFindRoom GatewayFindRoom
 }
 
 func (v argsValidator) ValidateArgs(
@@ -46,19 +43,6 @@ func (v argsValidator) ValidateArgs(
 
 	if authorUserEntity == nil {
 		return ErrNotFoundAuthorUser
-	}
-
-	roomEntity, err := v.
-		gatewayFindRoom.
-		Call(
-			ctx, args.RoomID,
-		)
-	if err != nil {
-		return fmt.Errorf("find room: %w", err)
-	}
-
-	if roomEntity == nil {
-		return ErrNotFoundRoom
 	}
 
 	return nil
