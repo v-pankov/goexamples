@@ -125,6 +125,7 @@ func (a sessionLogoutUsecaseMessageBusAdapter) unsubscribeSessionFromNewMessages
 	a.pending.Add(1)
 	go func() {
 		sub.writers.Wait()
+		close(sub.messages)
 		a.pending.Done()
 	}()
 
