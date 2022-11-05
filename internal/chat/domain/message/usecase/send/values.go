@@ -1,12 +1,10 @@
 package send
 
-import (
-	"github.com/vdrpkv/goexamples/internal/chat/domain/user"
-)
+import "github.com/vdrpkv/goexamples/internal/chat/domain/session"
 
 type Args struct {
-	AuthorUserID user.ID
-	MessageText  string
+	AuthorUserSessionID session.ID
+	MessageText         string
 }
 
 type Result struct {

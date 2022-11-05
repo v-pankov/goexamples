@@ -36,7 +36,7 @@ func (uc useCase) Do(
 
 	messageEntity, err := uc.repository.CreateMessage(
 		ctx,
-		args.AuthorUserID,
+		args.AuthorUserSessionID,
 		args.MessageText,
 	)
 
