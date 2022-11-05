@@ -1,4 +1,4 @@
-package enter
+package login
 
 import (
 	"github.com/vdrpkv/goexamples/internal/chat/domain/message"

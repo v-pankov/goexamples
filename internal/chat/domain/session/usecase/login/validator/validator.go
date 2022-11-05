@@ -5,11 +5,11 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/enter"
+	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/login"
 )
 
 type ArgsValidator interface {
-	ValidateArgs(ctx context.Context, args *enter.Args) error
+	ValidateArgs(ctx context.Context, args *login.Args) error
 }
 
 var (
@@ -23,7 +23,7 @@ func NewArgsValidator() ArgsValidator {
 type argsValidator struct{}
 
 func (v argsValidator) ValidateArgs(
-	ctx context.Context, args *enter.Args,
+	ctx context.Context, args *login.Args,
 ) error {
 	if len(strings.TrimSpace(args.UserName.String())) == 0 {
 		return ErrEmptyUserName

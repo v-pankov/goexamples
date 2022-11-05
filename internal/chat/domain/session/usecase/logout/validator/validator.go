@@ -5,11 +5,11 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/exit"
+	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/logout"
 )
 
 type ArgsValidator interface {
-	ValidateArgs(ctx context.Context, args *exit.Args) error
+	ValidateArgs(ctx context.Context, args *logout.Args) error
 }
 
 var (
@@ -29,7 +29,7 @@ type argsValidator struct {
 }
 
 func (v argsValidator) ValidateArgs(
-	ctx context.Context, args *exit.Args,
+	ctx context.Context, args *logout.Args,
 ) error {
 	sessionEntity, err := v.repository.FindSession(ctx, args.SessionID)
 	if err != nil {

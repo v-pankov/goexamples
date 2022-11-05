@@ -5,60 +5,60 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/enter"
+	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/login"
 )
 
 func TestArgsValidator(t *testing.T) {
 	for _, testCase := range []struct {
 		name string
-		give enter.Args
+		give login.Args
 		want error
 	}{
 		{
 			"ok",
-			enter.Args{
+			login.Args{
 				UserName: "a",
 			},
 			nil,
 		},
 		{
 			"empty user name",
-			enter.Args{
+			login.Args{
 				UserName: "",
 			},
 			ErrEmptyUserName,
 		},
 		{
 			"empty user name",
-			enter.Args{
+			login.Args{
 				UserName: " ",
 			},
 			ErrEmptyUserName,
 		},
 		{
 			"empty user name",
-			enter.Args{
+			login.Args{
 				UserName: "\t",
 			},
 			ErrEmptyUserName,
 		},
 		{
 			"empty user name",
-			enter.Args{
+			login.Args{
 				UserName: "\r\n",
 			},
 			ErrEmptyUserName,
 		},
 		{
 			"empty user name",
-			enter.Args{
+			login.Args{
 				UserName: "\n",
 			},
 			ErrEmptyUserName,
 		},
 		{
 			"empty user name",
-			enter.Args{
+			login.Args{
 				UserName: " \t\r\n\n",
 			},
 			ErrEmptyUserName,

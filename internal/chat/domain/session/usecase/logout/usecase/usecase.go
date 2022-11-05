@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/exit"
+	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/logout"
 )
 
 type UseCase interface {
 	Do(
 		ctx context.Context,
-		args *exit.Args,
+		args *logout.Args,
 	) (
-		*exit.Result,
+		*logout.Result,
 		error,
 	)
 }
@@ -34,9 +34,9 @@ type useCase struct {
 
 func (uc useCase) Do(
 	ctx context.Context,
-	args *exit.Args,
+	args *logout.Args,
 ) (
-	*exit.Result,
+	*logout.Result,
 	error,
 ) {
 	if err := uc.msgbus.UnsubscribeSessionFromNewMessages(ctx, args.SessionID); err != nil {
@@ -47,5 +47,5 @@ func (uc useCase) Do(
 		return nil, fmt.Errorf("deactivate session: %w", err)
 	}
 
-	return &exit.Result{}, nil
+	return &logout.Result{}, nil
 }

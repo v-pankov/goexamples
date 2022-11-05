@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/enter"
+	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/login"
 )
 
 type UseCase interface {
 	Do(
 		ctx context.Context,
-		args *enter.Args,
+		args *login.Args,
 	) (
-		*enter.Result,
+		*login.Result,
 		error,
 	)
 }
@@ -34,9 +34,9 @@ type useCase struct {
 
 func (uc useCase) Do(
 	ctx context.Context,
-	args *enter.Args,
+	args *login.Args,
 ) (
-	*enter.Result,
+	*login.Result,
 	error,
 ) {
 	userEntity, err := uc.repository.CreateOrFindUser(ctx, args.UserName)
@@ -54,7 +54,7 @@ func (uc useCase) Do(
 		return nil, fmt.Errorf("subscribe for new messages: %w", err)
 	}
 
-	return &enter.Result{
+	return &login.Result{
 		Messages:  messages,
 		SessionID: sessionEntity.ID,
 	}, nil

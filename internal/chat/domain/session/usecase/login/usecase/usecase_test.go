@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/vdrpkv/goexamples/internal/chat/domain/message"
 	"github.com/vdrpkv/goexamples/internal/chat/domain/session"
-	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/enter"
-	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/enter/usecase"
-	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/enter/usecase/mocks"
+	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/login"
+	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/login/usecase"
+	"github.com/vdrpkv/goexamples/internal/chat/domain/session/usecase/login/usecase/mocks"
 	"github.com/vdrpkv/goexamples/internal/chat/domain/user"
 )
 
@@ -144,7 +144,7 @@ func TestUseCase(t *testing.T) {
 				require.NoError(t, gotErr)
 				require.Equal(
 					t,
-					&enter.Result{
+					&login.Result{
 						Messages:  messagesStub,
 						SessionID: sessionEntityStub.ID,
 					},
@@ -266,7 +266,7 @@ func (s *tcgsMessageBus) stubSubscribeSessionForNewMessagesCall(mb *mocks.Messag
 var (
 	ctxStub = context.TODO()
 
-	argsStub = &enter.Args{
+	argsStub = &login.Args{
 		UserName: "username",
 	}
 

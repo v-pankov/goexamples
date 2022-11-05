@@ -1,4 +1,4 @@
-package exit
+package logout
 
 import "github.com/vdrpkv/goexamples/internal/chat/domain/session"
 
