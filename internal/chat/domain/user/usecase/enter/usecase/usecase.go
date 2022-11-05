@@ -44,9 +44,9 @@ func (uc useCase) Do(
 		return nil, fmt.Errorf("create or find user [%s]: %w", args.UserName, err)
 	}
 
-	sessionEntity, err := uc.repository.CreateSession(ctx, userEntity.ID)
+	sessionEntity, err := uc.repository.CreateActiveSession(ctx, userEntity.ID)
 	if err != nil {
-		return nil, fmt.Errorf("create session: %w", err)
+		return nil, fmt.Errorf("create active session: %w", err)
 	}
 
 	messages, err := uc.msgbus.SubscribeForNewMessages(ctx, sessionEntity.ID)

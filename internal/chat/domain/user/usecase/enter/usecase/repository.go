@@ -12,5 +12,5 @@ type UserRepository interface {
 }
 
 type SessionRepository interface {
-	repository.SessionCreator
+	repository.ActiveSessionCreator
 }

@@ -11,6 +11,8 @@ type (
 
 		ID     ID
 		UserID user.ID
+
+		Active bool
 	}
 
 	ID string

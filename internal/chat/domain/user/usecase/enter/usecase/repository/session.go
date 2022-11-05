@@ -7,6 +7,6 @@ import (
 	"github.com/vdrpkv/goexamples/internal/chat/domain/user"
 )
 
-type SessionCreator interface {
-	CreateSession(ctx context.Context, userID user.ID) (*session.Entity, error)
+type ActiveSessionCreator interface {
+	CreateActiveSession(ctx context.Context, userID user.ID) (*session.Entity, error)
 }
