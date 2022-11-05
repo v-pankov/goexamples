@@ -38,7 +38,6 @@ func (uc useCase) Do(
 		Call(
 			ctx,
 			args.AuthorUserID,
-			args.RoomID,
 			args.MessageText,
 		)
 	if err != nil {
