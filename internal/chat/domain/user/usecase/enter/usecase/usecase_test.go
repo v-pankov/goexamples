@@ -54,7 +54,7 @@ var testCases = []testCase{
 		},
 	},
 	{
-		"Repository CreateOrFindUser and CreateSession and MesageBus SubscribeForNewMessages erros",
+		"Repository CreateOrFindUser and CreateSession and MesageBus SubscribeSessionForNewMessages erros",
 		tcGive{
 			stubs: tcgStubs{
 				repository: tcgsRepository{
@@ -66,8 +66,8 @@ var testCases = []testCase{
 					},
 				},
 				messageBus: tcgsMessageBus{
-					subscribeForNewMessages: tcgsMessageBusSubscribeForNewMessages{
-						err: errStubMessageBusSubscribeForNewMessages,
+					subscribeSessionForNewMessages: tcgsMessageBusSubscribeSessionForNewMessages{
+						err: errStubMessageBusSubscribeSessionForNewMessages,
 					},
 				},
 			},
@@ -92,7 +92,7 @@ var testCases = []testCase{
 		},
 	},
 	{
-		"Repository CreateSession and MessageBus SubscribeForNewMessages errors",
+		"Repository CreateSession and MessageBus SubscribeSessionForNewMessages errors",
 		tcGive{
 			stubs: tcgStubs{
 				repository: tcgsRepository{
@@ -101,8 +101,8 @@ var testCases = []testCase{
 					},
 				},
 				messageBus: tcgsMessageBus{
-					subscribeForNewMessages: tcgsMessageBusSubscribeForNewMessages{
-						err: errStubMessageBusSubscribeForNewMessages,
+					subscribeSessionForNewMessages: tcgsMessageBusSubscribeSessionForNewMessages{
+						err: errStubMessageBusSubscribeSessionForNewMessages,
 					},
 				},
 			},
@@ -112,18 +112,18 @@ var testCases = []testCase{
 		},
 	},
 	{
-		"MessageBus SubscribeForNewMessages error",
+		"MessageBus SubscribeSessionForNewMessages error",
 		tcGive{
 			stubs: tcgStubs{
 				messageBus: tcgsMessageBus{
-					subscribeForNewMessages: tcgsMessageBusSubscribeForNewMessages{
-						err: errStubMessageBusSubscribeForNewMessages,
+					subscribeSessionForNewMessages: tcgsMessageBusSubscribeSessionForNewMessages{
+						err: errStubMessageBusSubscribeSessionForNewMessages,
 					},
 				},
 			},
 		},
 		tcWant{
-			err: errStubMessageBusSubscribeForNewMessages,
+			err: errStubMessageBusSubscribeSessionForNewMessages,
 		},
 	},
 }
@@ -177,10 +177,10 @@ type (
 	}
 
 	tcgsMessageBus struct {
-		subscribeForNewMessages tcgsMessageBusSubscribeForNewMessages
+		subscribeSessionForNewMessages tcgsMessageBusSubscribeSessionForNewMessages
 	}
 
-	tcgsMessageBusSubscribeForNewMessages struct {
+	tcgsMessageBusSubscribeSessionForNewMessages struct {
 		err error
 	}
 	tcgsRepository struct {
@@ -233,7 +233,7 @@ func (s *tcgsRepository) stubCreateOrFindUserCall(r *mocks.Repository) {
 
 func (s *tcgsRepository) stubCreateSessionCall(r *mocks.Repository) {
 	var (
-		call   = r.On("CreateSession", ctxStub, userEntityStub.ID)
+		call   = r.On("CreateActiveSession", ctxStub, userEntityStub.ID)
 		retErr = s.createSession.err
 		retVal *session.Entity
 	)
@@ -246,13 +246,13 @@ func (s *tcgsRepository) stubCreateSessionCall(r *mocks.Repository) {
 }
 
 func (s *tcgsMessageBus) stubMessageBusMock(mb *mocks.MessageBus) {
-	s.stubSubscribeForNewMessagesCall(mb)
+	s.stubSubscribeSessionForNewMessagesCall(mb)
 }
 
-func (s *tcgsMessageBus) stubSubscribeForNewMessagesCall(mb *mocks.MessageBus) {
+func (s *tcgsMessageBus) stubSubscribeSessionForNewMessagesCall(mb *mocks.MessageBus) {
 	var (
-		call   = mb.On("SubscribeForNewMessages", ctxStub, sessionEntityStub.ID)
-		retErr = s.subscribeForNewMessages.err
+		call   = mb.On("SubscribeSessionForNewMessages", ctxStub, sessionEntityStub.ID)
+		retErr = s.subscribeSessionForNewMessages.err
 		retVal <-chan *message.Entity
 	)
 
@@ -280,7 +280,7 @@ var (
 
 	messagesStub = make(chan *message.Entity)
 
-	errStubRepositoryCreateOrFindUser        = errors.New("error stub for GatewayRepository CreateOrFindUser")
-	errStubRepositoryCreateSession           = errors.New("error stub for Repository CreateSession")
-	errStubMessageBusSubscribeForNewMessages = errors.New("error stub for MessageBus SubscribeForNewMessages")
+	errStubRepositoryCreateOrFindUser               = errors.New("error stub for GatewayRepository CreateOrFindUser")
+	errStubRepositoryCreateSession                  = errors.New("error stub for Repository CreateSession")
+	errStubMessageBusSubscribeSessionForNewMessages = errors.New("error stub for MessageBus SubscribeSessionForNewMessages")
 )

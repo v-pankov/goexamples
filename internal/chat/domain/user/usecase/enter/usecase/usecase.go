@@ -49,7 +49,7 @@ func (uc useCase) Do(
 		return nil, fmt.Errorf("create active session: %w", err)
 	}
 
-	messages, err := uc.msgbus.SubscribeForNewMessages(ctx, sessionEntity.ID)
+	messages, err := uc.msgbus.SubscribeSessionForNewMessages(ctx, sessionEntity.ID)
 	if err != nil {
 		return nil, fmt.Errorf("subscribe for new messages: %w", err)
 	}

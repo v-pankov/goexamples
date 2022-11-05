@@ -16,6 +16,29 @@ type Repository struct {
 	mock.Mock
 }
 
+// CreateActiveSession provides a mock function with given fields: ctx, userID
+func (_m *Repository) CreateActiveSession(ctx context.Context, userID user.ID) (*session.Entity, error) {
+	ret := _m.Called(ctx, userID)
+
+	var r0 *session.Entity
+	if rf, ok := ret.Get(0).(func(context.Context, user.ID) *session.Entity); ok {
+		r0 = rf(ctx, userID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*session.Entity)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, user.ID) error); ok {
+		r1 = rf(ctx, userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CreateOrFindUser provides a mock function with given fields: ctx, userName
 func (_m *Repository) CreateOrFindUser(ctx context.Context, userName user.Name) (*user.Entity, error) {
 	ret := _m.Called(ctx, userName)
@@ -32,29 +55,6 @@ func (_m *Repository) CreateOrFindUser(ctx context.Context, userName user.Name) 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, user.Name) error); ok {
 		r1 = rf(ctx, userName)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// CreateSession provides a mock function with given fields: ctx, userID
-func (_m *Repository) CreateSession(ctx context.Context, userID user.ID) (*session.Entity, error) {
-	ret := _m.Called(ctx, userID)
-
-	var r0 *session.Entity
-	if rf, ok := ret.Get(0).(func(context.Context, user.ID) *session.Entity); ok {
-		r0 = rf(ctx, userID)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*session.Entity)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, user.ID) error); ok {
-		r1 = rf(ctx, userID)
 	} else {
 		r1 = ret.Error(1)
 	}

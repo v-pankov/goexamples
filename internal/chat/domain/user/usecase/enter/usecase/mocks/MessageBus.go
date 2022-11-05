@@ -16,8 +16,8 @@ type MessageBus struct {
 	mock.Mock
 }
 
-// SubscribeForNewMessages provides a mock function with given fields: ctx, sessionID
-func (_m *MessageBus) SubscribeForNewMessages(ctx context.Context, sessionID session.ID) (<-chan *message.Entity, error) {
+// SubscribeSessionForNewMessages provides a mock function with given fields: ctx, sessionID
+func (_m *MessageBus) SubscribeSessionForNewMessages(ctx context.Context, sessionID session.ID) (<-chan *message.Entity, error) {
 	ret := _m.Called(ctx, sessionID)
 
 	var r0 <-chan *message.Entity

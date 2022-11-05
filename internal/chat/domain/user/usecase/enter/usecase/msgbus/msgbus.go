@@ -7,8 +7,8 @@ import (
 	"github.com/vdrpkv/goexamples/internal/chat/domain/session"
 )
 
-type NewMessageSubscriber interface {
-	SubscribeForNewMessages(
+type NewMessagesSessionSubscriber interface {
+	SubscribeSessionForNewMessages(
 		ctx context.Context,
 		sessionID session.ID,
 	) (
