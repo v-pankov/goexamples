@@ -2,76 +2,55 @@ package login
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strings"
-
-	"github.com/vdrpkv/goexamples/internal/chat/entity/message"
-	"github.com/vdrpkv/goexamples/internal/chat/entity/session"
-	"github.com/vdrpkv/goexamples/internal/chat/entity/user"
-
-	messageGateway "github.com/vdrpkv/goexamples/internal/chat/usecase/user/login/gateway/message"
-	sessionGateway "github.com/vdrpkv/goexamples/internal/chat/usecase/user/login/gateway/session"
-	userGateway "github.com/vdrpkv/goexamples/internal/chat/usecase/user/login/gateway/user"
-)
-
-type Request struct {
-	UserName user.Name
-}
-
-type Response struct {
-	Messages  <-chan *message.Entity
-	SessionID session.ID
-}
-
-var (
-	ErrEmptyUserName = errors.New("user name is empty")
 )
 
 type UseCase interface {
-	Do(ctx context.Context, request *Request) (*Response, error)
+	Do(ctx context.Context, request *Request) error
 }
 
 func New(
-	messageSubscriber messageGateway.Subscriber,
-	sessionCreator sessionGateway.Creator,
-	userCreatorFinder userGateway.CreatorFinder,
+	gateways Gateways,
+	presenter Presenter,
 ) UseCase {
 	return useCase{
-		messageSubscriber: messageSubscriber,
-		sessionCreator:    sessionCreator,
-		userCreatorFinder: userCreatorFinder,
+		gateways:  gateways,
+		presenter: presenter,
 	}
 }
 
 type useCase struct {
-	messageSubscriber messageGateway.Subscriber
-	sessionCreator    sessionGateway.Creator
-	userCreatorFinder userGateway.CreatorFinder
+	gateways  Gateways
+	presenter Presenter
 }
 
-func (uc useCase) Do(ctx context.Context, request *Request) (*Response, error) {
+func (uc useCase) Do(ctx context.Context, request *Request) error {
 	if len(strings.TrimSpace(request.UserName.String())) == 0 {
-		return nil, ErrEmptyUserName
+		return ErrEmptyUserName
 	}
 
-	userEntity, err := uc.userCreatorFinder.CreateOrFind(ctx, request.UserName)
+	userEntity, err := uc.gateways.UserCreatorFinder.CreateOrFind(ctx, request.UserName)
 	if err != nil {
-		return nil, fmt.Errorf("create or find user [%s]: %w", request.UserName, err)
+		return fmt.Errorf("create or find user [%s]: %w", request.UserName, err)
 	}
 
-	sessionEntity, err := uc.sessionCreator.Create(ctx, userEntity.ID)
+	sessionEntity, err := uc.gateways.SessionCreator.Create(ctx, userEntity.ID)
 	if err != nil {
-		return nil, fmt.Errorf("create session: %w", err)
+		return fmt.Errorf("create session: %w", err)
 	}
 
-	messages, err := uc.messageSubscriber.Subscribe(ctx, sessionEntity.ID)
+	messages, err := uc.gateways.MessageSubscriber.Subscribe(ctx, sessionEntity.ID)
 	if err != nil {
-		return nil, fmt.Errorf("subscribe messages: %w", err)
+		return fmt.Errorf("subscribe messages: %w", err)
 	}
 
-	return &Response{
+	if err := uc.presenter.Present(ctx, &Response{
 		Messages:  messages,
 		SessionID: sessionEntity.ID,
-	}, nil
+	}); err != nil {
+		return fmt.Errorf("present: %w", err)
+	}
+
+	return nil
 }
