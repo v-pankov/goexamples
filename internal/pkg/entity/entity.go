@@ -11,3 +11,15 @@ type Entity struct {
 func (e *Entity) Deleted() bool {
 	return e.DeletedAt == nil
 }
+
+func (e *Entity) UpdateTime() {
+	e.UpdatedAt = time.Now()
+}
+
+func New() Entity {
+	timeNow := time.Now()
+	return Entity{
+		CreatedAt: timeNow,
+		UpdatedAt: timeNow,
+	}
+}
