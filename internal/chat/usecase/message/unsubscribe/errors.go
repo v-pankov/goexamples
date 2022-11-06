@@ -1,4 +1,4 @@
-package logout
+package unsubscribe
 
 import "errors"
 

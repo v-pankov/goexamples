@@ -1,4 +1,4 @@
-package logout
+package unsubscribe
 
 import (
 	"context"
@@ -38,8 +38,8 @@ func (uc useCase) Do(ctx context.Context, request *Request) error {
 		return ErrSessionNotActive
 	}
 
-	if err := uc.gateways.SessionDeactivator.Deactivate(ctx, sessionEntity.ID); err != nil {
-		return fmt.Errorf("deactivate session: %w", err)
+	if err := uc.gateways.MessageUnsubscriber.Unsubscribe(ctx, sessionEntity.ID); err != nil {
+		return fmt.Errorf("unsubsribe messages: %w", err)
 	}
 
 	if err := uc.presenter.Present(ctx, &Response{}); err != nil {
