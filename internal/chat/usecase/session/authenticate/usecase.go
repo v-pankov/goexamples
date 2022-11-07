@@ -1,4 +1,4 @@
-package logout
+package authenticate
 
 import (
 	"context"
@@ -25,8 +25,17 @@ type useCase struct {
 }
 
 func (uc useCase) Do(ctx context.Context, request *Request) error {
-	if err := uc.gateways.SessionDeactivator.Deactivate(ctx, request.SessionID); err != nil {
-		return fmt.Errorf("deactivate session: %w", err)
+	sessionEntity, err := uc.gateways.SessionFinder.Find(ctx, request.SessionID)
+	if err != nil {
+		return fmt.Errorf("find session: %w", err)
+	}
+
+	if sessionEntity == nil {
+		return ErrSessionNotFound
+	}
+
+	if !sessionEntity.Active {
+		return ErrSessionNotActive
 	}
 
 	if err := uc.presenter.Present(ctx, &Response{}); err != nil {

@@ -25,20 +25,7 @@ type useCase struct {
 }
 
 func (uc useCase) Do(ctx context.Context, request *Request) error {
-	sessionEntity, err := uc.gateways.SessionFinder.Find(ctx, request.SessionID)
-	if err != nil {
-		return fmt.Errorf("find session: %w", err)
-	}
-
-	if sessionEntity == nil {
-		return ErrSessionNotFound
-	}
-
-	if !sessionEntity.Active {
-		return ErrSessionNotActive
-	}
-
-	messages, err := uc.gateways.MessageSubscriber.Subscribe(ctx, sessionEntity.ID)
+	messages, err := uc.gateways.MessageSubscriber.Subscribe(ctx, request.SessionID)
 	if err != nil {
 		return fmt.Errorf("subscribe messages: %w", err)
 	}

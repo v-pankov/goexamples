@@ -6,5 +6,4 @@ import (
 
 type Gateways struct {
 	SessionDeactivator sessionGateway.Deactivator
-	SessionFinder      sessionGateway.Finder
 }
