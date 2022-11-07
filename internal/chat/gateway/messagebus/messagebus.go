@@ -6,10 +6,10 @@ import (
 	usecaseMessageUnsubscribeGateway "github.com/vdrpkv/goexamples/internal/chat/usecase/message/unsubscribe/gateway/message"
 )
 
-type MessageBusGateways struct {
-	UseCaseMessageSend        UseCaseMessageSendGateways
-	UseCaseMessageSubscribe   UseCaseMessageSubscribeGateways
-	UseCaseMessageUnsubscribe UseCaseMessageUnsubscribeGateways
+type Gateways struct {
+	UseCaseMessageSendGateways        UseCaseMessageSendGateways
+	UseCaseMessageSubscribeGateways   UseCaseMessageSubscribeGateways
+	UseCaseMessageUnsubscribeGateways UseCaseMessageUnsubscribeGateways
 }
 
 type UseCaseMessageSendGateways struct {

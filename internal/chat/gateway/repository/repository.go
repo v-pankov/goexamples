@@ -11,11 +11,11 @@ import (
 	usecaseUserLogoutSessionGateway "github.com/vdrpkv/goexamples/internal/chat/usecase/user/logout/gateway/session"
 )
 
-type RepositoryGateways struct {
-	UseCaseMessageSend         UseCaseMessageSendGateways
-	UseCaseSessionAuthenticate UseCaseSessionAuthenticateGateways
-	UseCaseUserLogin           UseCaseUserLoginGateways
-	UseCaseUserLogout          UseCaseUserLogoutGateways
+type Gateways struct {
+	UseCaseMessageSendGateways         UseCaseMessageSendGateways
+	UseCaseSessionAuthenticateGateways UseCaseSessionAuthenticateGateways
+	UseCaseUserLoginGateways           UseCaseUserLoginGateways
+	UseCaseUserLogoutGateways          UseCaseUserLogoutGateways
 }
 
 type UseCaseMessageSendGateways struct {
