@@ -8,7 +8,7 @@ type (
 		Type Type
 
 		FiredAt   time.Time
-		SavedAt   time.Time
+		CreatedAt time.Time
 		DeletedAt *time.Time
 	}
 

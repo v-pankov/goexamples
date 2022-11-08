@@ -1,18 +1,23 @@
 package event
 
 import (
+	"time"
+
 	"github.com/vdrpkv/goexamples/internal/chat/entity/event"
 	"github.com/vdrpkv/goexamples/internal/chat/entity/event/message/data"
 	"github.com/vdrpkv/goexamples/internal/chat/entity/message"
 )
 
 type (
-	Event struct {
+	Entity struct {
 		EventID   event.ID
 		MessageID message.ID
 
 		Type Type
 		Data Data
+
+		CreatedAt time.Time
+		DeletedAt *time.Time
 	}
 
 	Type string
