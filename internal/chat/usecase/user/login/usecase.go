@@ -7,47 +7,37 @@ import (
 )
 
 type UseCase interface {
-	Do(ctx context.Context, request *Request) error
+	Do(ctx context.Context, request *Request) (*Response, error)
 }
 
 func New(
 	gateways Gateways,
-	presenter Presenter,
 ) UseCase {
 	return useCase{
-		gateways:  gateways,
-		presenter: presenter,
+		gateways: gateways,
 	}
 }
 
 type useCase struct {
-	gateways  Gateways
-	presenter Presenter
+	gateways Gateways
 }
 
-func (uc useCase) Do(ctx context.Context, request *Request) error {
+func (uc useCase) Do(ctx context.Context, request *Request) (*Response, error) {
 	if len(strings.TrimSpace(request.UserName.String())) == 0 {
-		return ErrEmptyUserName
+		return nil, ErrEmptyUserName
 	}
 
 	userEntity, err := uc.gateways.UserCreatorFinder.CreateOrFind(ctx, request.UserName)
 	if err != nil {
-		return fmt.Errorf("create or find user [%s]: %w", request.UserName, err)
+		return nil, fmt.Errorf("create or find user [%s]: %w", request.UserName, err)
 	}
 
 	sessionEntity, err := uc.gateways.SessionCreator.Create(ctx, userEntity.ID)
 	if err != nil {
-		return fmt.Errorf("create session: %w", err)
+		return nil, fmt.Errorf("create session: %w", err)
 	}
 
-	if err := uc.presenter.Present(
-		ctx,
-		&Response{
-			SessionID: sessionEntity.ID,
-		},
-	); err != nil {
-		return fmt.Errorf("present: %w", err)
-	}
-
-	return nil
+	return &Response{
+		SessionID: sessionEntity.ID,
+	}, nil
 }

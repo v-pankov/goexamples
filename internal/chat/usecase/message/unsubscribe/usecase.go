@@ -6,32 +6,25 @@ import (
 )
 
 type UseCase interface {
-	Do(ctx context.Context, request *Request) error
+	Do(ctx context.Context, request *Request) (*Response, error)
 }
 
 func New(
 	gateways Gateways,
-	presenter Presenter,
 ) UseCase {
 	return useCase{
-		gateways:  gateways,
-		presenter: presenter,
+		gateways: gateways,
 	}
 }
 
 type useCase struct {
-	gateways  Gateways
-	presenter Presenter
+	gateways Gateways
 }
 
-func (uc useCase) Do(ctx context.Context, request *Request) error {
+func (uc useCase) Do(ctx context.Context, request *Request) (*Response, error) {
 	if err := uc.gateways.MessageUnsubscriber.Unsubscribe(ctx, request.SessionID); err != nil {
-		return fmt.Errorf("unsubsribe messages: %w", err)
+		return nil, fmt.Errorf("unsubsribe messages: %w", err)
 	}
 
-	if err := uc.presenter.Present(ctx, &Response{}); err != nil {
-		return fmt.Errorf("present: %w", err)
-	}
-
-	return nil
+	return &Response{}, nil
 }

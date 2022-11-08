@@ -6,41 +6,34 @@ import (
 )
 
 type UseCase interface {
-	Do(ctx context.Context, request *Request) error
+	Do(ctx context.Context, request *Request) (*Response, error)
 }
 
 func New(
 	gateways Gateways,
-	presenter Presenter,
 ) UseCase {
 	return useCase{
-		gateways:  gateways,
-		presenter: presenter,
+		gateways: gateways,
 	}
 }
 
 type useCase struct {
-	gateways  Gateways
-	presenter Presenter
+	gateways Gateways
 }
 
-func (uc useCase) Do(ctx context.Context, request *Request) error {
+func (uc useCase) Do(ctx context.Context, request *Request) (*Response, error) {
 	messageEntity, err := uc.gateways.MessageCreator.Create(
 		ctx,
-		request.AuthorUserSessionID,
+		request.SessionID,
 		request.MessageText,
 	)
 	if err != nil {
-		return fmt.Errorf("create message: %w", err)
+		return nil, fmt.Errorf("create message: %w", err)
 	}
 
 	if err = uc.gateways.MessageBroadcaster.Broadcast(ctx, messageEntity); err != nil {
-		return fmt.Errorf("broadcast message: %w", err)
+		return nil, fmt.Errorf("broadcast message: %w", err)
 	}
 
-	if err := uc.presenter.Present(ctx, &Response{}); err != nil {
-		return fmt.Errorf("present: %w", err)
-	}
-
-	return nil
+	return &Response{}, nil
 }
