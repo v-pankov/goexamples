@@ -3,10 +3,21 @@ package authenticate
 import (
 	"context"
 	"fmt"
+
+	"github.com/vdrpkv/goexamples/internal/chat/entity/session"
+	"github.com/vdrpkv/goexamples/internal/chat/usecase/session/authenticate/model/request"
+	"github.com/vdrpkv/goexamples/internal/chat/usecase/session/authenticate/model/response"
 )
 
 type UseCase interface {
-	Do(ctx context.Context, request *Request) (*Response, error)
+	Do(
+		ctx context.Context,
+		requestCtx *request.Context,
+		requestModel *request.Model,
+	) (
+		*response.Model,
+		error,
+	)
 }
 
 func New(
@@ -21,8 +32,17 @@ type useCase struct {
 	gateways Gateways
 }
 
-func (uc useCase) Do(ctx context.Context, request *Request) (*Response, error) {
-	sessionEntity, err := uc.gateways.SessionFinder.Find(ctx, request.SessionID)
+func (uc useCase) Do(
+	ctx context.Context,
+	requestCtx *request.Context,
+	requestModel *request.Model,
+) (
+	*response.Model,
+	error,
+) {
+	sessionEntity, err := uc.gateways.SessionFinder.Find(
+		ctx, session.ID(requestModel.SessionID),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("find session: %w", err)
 	}
@@ -35,5 +55,7 @@ func (uc useCase) Do(ctx context.Context, request *Request) (*Response, error) {
 		return nil, ErrSessionNotActive
 	}
 
-	return &Response{}, nil
+	return &response.Model{
+		UserID: response.UserID(sessionEntity.UserID),
+	}, nil
 }

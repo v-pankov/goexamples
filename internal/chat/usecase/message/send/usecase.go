@@ -3,10 +3,21 @@ package send
 import (
 	"context"
 	"fmt"
+
+	"github.com/vdrpkv/goexamples/internal/chat/entity/session"
+	"github.com/vdrpkv/goexamples/internal/chat/usecase/message/send/model/request"
+	"github.com/vdrpkv/goexamples/internal/chat/usecase/message/send/model/response"
 )
 
 type UseCase interface {
-	Do(ctx context.Context, request *Request) (*Response, error)
+	Do(
+		ctx context.Context,
+		requestCtx *request.Context,
+		requestModel *request.Model,
+	) (
+		*response.Model,
+		error,
+	)
 }
 
 func New(
@@ -21,11 +32,18 @@ type useCase struct {
 	gateways Gateways
 }
 
-func (uc useCase) Do(ctx context.Context, request *Request) (*Response, error) {
+func (uc useCase) Do(
+	ctx context.Context,
+	requestCtx *request.Context,
+	requestModel *request.Model,
+) (
+	*response.Model,
+	error,
+) {
 	messageEntity, err := uc.gateways.MessageCreator.Create(
 		ctx,
-		request.SessionID,
-		request.MessageText,
+		session.ID(requestCtx.SessionID),
+		requestModel.MessageText,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("create message: %w", err)
@@ -35,5 +53,5 @@ func (uc useCase) Do(ctx context.Context, request *Request) (*Response, error) {
 		return nil, fmt.Errorf("broadcast message: %w", err)
 	}
 
-	return &Response{}, nil
+	return &response.Model{}, nil
 }
