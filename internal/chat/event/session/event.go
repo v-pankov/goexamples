@@ -9,16 +9,19 @@ import (
 
 type (
 	Event struct {
+		Header Header
+		Type   Type
+		Data   Data
+		Time   time.Time
+	}
+
+	Header struct {
 		UserID    event.UserID
 		SessionID event.SessionID
-
-		Type Type
-		Data Data
-
-		Time time.Time
 	}
 
 	Type string
+
 	Data struct {
 		Created *data.Created
 		Deleted *data.Deleted
