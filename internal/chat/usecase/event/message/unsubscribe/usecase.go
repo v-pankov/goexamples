@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/vdrpkv/goexamples/internal/chat/entity/session"
-	"github.com/vdrpkv/goexamples/internal/chat/usecase/message/unsubscribe/model/request"
-	"github.com/vdrpkv/goexamples/internal/chat/usecase/message/unsubscribe/model/response"
+	"github.com/vdrpkv/goexamples/internal/chat/usecase/event/message/unsubscribe/model/request"
+	"github.com/vdrpkv/goexamples/internal/chat/usecase/event/message/unsubscribe/model/response"
 )
 
 type UseCase interface {

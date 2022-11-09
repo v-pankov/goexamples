@@ -2,7 +2,7 @@ package session
 
 import (
 	"github.com/vdrpkv/goexamples/internal/chat/event"
-	"github.com/vdrpkv/goexamples/internal/chat/event/user/data"
+	"github.com/vdrpkv/goexamples/internal/chat/event/session/data"
 )
 
 type (

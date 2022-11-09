@@ -1,9 +1,9 @@
 package messagebus
 
 import (
+	usecaseMessageSubscribeGateway "github.com/vdrpkv/goexamples/internal/chat/usecase/event/message/subscribe/gateway/message"
+	usecaseMessageUnsubscribeGateway "github.com/vdrpkv/goexamples/internal/chat/usecase/event/message/unsubscribe/gateway/message"
 	usecaseMessageSendGateway "github.com/vdrpkv/goexamples/internal/chat/usecase/message/send/gateway/message"
-	usecaseMessageSubscribeGateway "github.com/vdrpkv/goexamples/internal/chat/usecase/message/subscribe/gateway/message"
-	usecaseMessageUnsubscribeGateway "github.com/vdrpkv/goexamples/internal/chat/usecase/message/unsubscribe/gateway/message"
 )
 
 type Gateways struct {
