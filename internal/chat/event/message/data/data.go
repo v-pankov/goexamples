@@ -1,11 +1,13 @@
 package data
 
+import "github.com/vdrpkv/goexamples/internal/chat/event"
+
 type Created struct {
-	MessageText string
+	MessageContents event.MessageContents
 }
 
 type Updated struct {
-	MessageText string
+	MessageContents event.MessageContents
 }
 
 type Deleted struct {

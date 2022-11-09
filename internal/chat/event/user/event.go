@@ -1,22 +1,21 @@
 package user
 
 import (
-	"github.com/vdrpkv/goexamples/internal/pkg/event"
+	"time"
 
-	"github.com/vdrpkv/goexamples/internal/chat/entity/session"
-	"github.com/vdrpkv/goexamples/internal/chat/entity/user"
+	"github.com/vdrpkv/goexamples/internal/chat/event"
 	"github.com/vdrpkv/goexamples/internal/chat/event/user/data"
 )
 
 type (
 	Event struct {
-		event.Event
-
-		UserID    user.ID
-		SessionID session.ID
+		UserID    event.UserID
+		SessionID event.SessionID
 
 		Type Type
 		Data Data
+
+		Time time.Time
 	}
 
 	Type string
