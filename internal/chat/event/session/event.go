@@ -1,19 +1,12 @@
 package session
 
 import (
-	"time"
-
 	"github.com/vdrpkv/goexamples/internal/chat/event"
 	"github.com/vdrpkv/goexamples/internal/chat/event/user/data"
 )
 
 type (
-	Event struct {
-		Header Header
-		Type   Type
-		Data   Data
-		Time   time.Time
-	}
+	Event event.Template[Header, Type, Data]
 
 	Header struct {
 		UserID    event.UserID
