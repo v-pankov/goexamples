@@ -5,6 +5,6 @@ import (
 )
 
 type Gateways struct {
-	MessageBroadcaster messageGateway.Broadcaster
-	MessageCreator     messageGateway.Creator
+	EventCreator   messageGateway.EventCreator
+	MessageCreator messageGateway.Creator
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/vdrpkv/goexamples/internal/chat/entity/session"
+	"github.com/vdrpkv/goexamples/internal/chat/entity/user"
 	"github.com/vdrpkv/goexamples/internal/chat/usecase/message/send/model/request"
 	"github.com/vdrpkv/goexamples/internal/chat/usecase/message/send/model/response"
 )
@@ -49,8 +50,10 @@ func (uc useCase) Do(
 		return nil, fmt.Errorf("create message: %w", err)
 	}
 
-	if err = uc.gateways.MessageBroadcaster.Broadcast(ctx, messageEntity); err != nil {
-		return nil, fmt.Errorf("broadcast message: %w", err)
+	if err = uc.gateways.EventCreator.CreateEvent(
+		ctx, user.ID(requestCtx.UserID), messageEntity,
+	); err != nil {
+		return nil, fmt.Errorf("create event: %w", err)
 	}
 
 	return &response.Model{}, nil
