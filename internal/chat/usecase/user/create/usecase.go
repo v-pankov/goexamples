@@ -6,9 +6,8 @@ import (
 	"strings"
 
 	"github.com/vdrpkv/goexamples/internal/chat/entity/user"
-	"github.com/vdrpkv/goexamples/internal/chat/usecase/user/login/gateways"
-	"github.com/vdrpkv/goexamples/internal/chat/usecase/user/login/model/request"
-	"github.com/vdrpkv/goexamples/internal/chat/usecase/user/login/model/response"
+	"github.com/vdrpkv/goexamples/internal/chat/usecase/user/create/model/request"
+	"github.com/vdrpkv/goexamples/internal/chat/usecase/user/create/model/response"
 )
 
 type UseCase interface {
@@ -46,24 +45,20 @@ func (uc useCase) Do(
 		return nil, ErrEmptyUserName
 	}
 
-	userID, err := gateways.CreateOrFindUser(
-		ctx,
-		uc.gateways,
-		uc.gateways,
-		user.Name(requestModel.UserName),
+	userEntity, err := uc.gateways.CreateNewUserEntity(
+		ctx, user.Name(requestModel.UserName),
 	)
 	if err != nil {
-		return nil, fmt.Errorf("create or find user: %w", err)
+		return nil, fmt.Errorf("create new user entity: %w", err)
 	}
 
-	sessionEntity, err := uc.gateways.CreateSession(
-		ctx, userID,
-	)
-	if err != nil {
-		return nil, fmt.Errorf("create session: %w", err)
+	if err := uc.gateways.CreateNewUserEvent(
+		ctx, userEntity,
+	); err != nil {
+		return nil, fmt.Errorf("create new user event: %w", err)
 	}
 
 	return &response.Model{
-		SessionID: response.SessionID(sessionEntity.ID),
+		UserID: response.UserID(userEntity.ID),
 	}, nil
 }

@@ -40,7 +40,7 @@ func (uc useCase) Do(
 	*response.Model,
 	error,
 ) {
-	if err := uc.gateways.SessionDeactivator.Deactivate(ctx, session.ID(requestCtx.SessionID)); err != nil {
+	if err := uc.gateways.DeactivateSession(ctx, session.ID(requestCtx.SessionID)); err != nil {
 		return nil, fmt.Errorf("deactivate session: %w", err)
 	}
 

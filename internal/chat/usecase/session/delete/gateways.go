@@ -1,4 +1,4 @@
-package authenticate
+package delete
 
 import (
 	"context"
@@ -8,4 +8,6 @@ import (
 
 type Gateways interface {
 	FindSessionEntity(ctx context.Context, sessionID session.ID) (*session.Entity, error)
+	UpdateSessionEntity(ctx context.Context, sessionEntity *session.Entity) error
+	CreateSessionDeletedEvent(ctx context.Context, sessionEntity *session.Entity) error
 }

@@ -40,7 +40,7 @@ func (uc useCase) Do(
 	*response.Model,
 	error,
 ) {
-	sessionEntity, err := uc.gateways.SessionFinder.Find(
+	sessionEntity, err := uc.gateways.FindSessionEntity(
 		ctx, session.ID(requestModel.SessionID),
 	)
 	if err != nil {

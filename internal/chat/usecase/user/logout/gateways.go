@@ -1,9 +1,11 @@
 package logout
 
 import (
-	sessionGateway "github.com/vdrpkv/goexamples/internal/chat/usecase/user/logout/gateway/session"
+	"context"
+
+	"github.com/vdrpkv/goexamples/internal/chat/entity/session"
 )
 
-type Gateways struct {
-	SessionDeactivator sessionGateway.Deactivator
+type Gateways interface {
+	DeactivateSession(ctx context.Context, sessionID session.ID) error
 }
