@@ -40,8 +40,8 @@ func (uc useCase) Do(
 	*response.Model,
 	error,
 ) {
-	if err := uc.gateways.DeactivateSession(ctx, session.ID(requestCtx.SessionID)); err != nil {
-		return nil, fmt.Errorf("deactivate session: %w", err)
+	if err := uc.gateways.DeleteSession(ctx, session.ID(requestCtx.SessionID)); err != nil {
+		return nil, fmt.Errorf("delete session: %w", err)
 	}
 
 	return &response.Model{}, nil

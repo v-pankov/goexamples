@@ -7,5 +7,8 @@ import (
 )
 
 type Gateways interface {
-	DeactivateSession(ctx context.Context, sessionID session.ID) error
+	DeleteSession(
+		ctx context.Context,
+		sessionID session.ID,
+	) error
 }

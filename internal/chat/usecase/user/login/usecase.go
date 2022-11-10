@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/vdrpkv/goexamples/internal/chat/entity/user"
-	"github.com/vdrpkv/goexamples/internal/chat/usecase/user/login/gateways"
 	"github.com/vdrpkv/goexamples/internal/chat/usecase/user/login/model/request"
 	"github.com/vdrpkv/goexamples/internal/chat/usecase/user/login/model/response"
 )
@@ -46,10 +45,8 @@ func (uc useCase) Do(
 		return nil, ErrEmptyUserName
 	}
 
-	userID, err := gateways.CreateOrFindUser(
+	userEntity, err := uc.gateways.CreateOrFindUser(
 		ctx,
-		uc.gateways,
-		uc.gateways,
 		user.Name(requestModel.UserName),
 	)
 	if err != nil {
@@ -57,7 +54,7 @@ func (uc useCase) Do(
 	}
 
 	sessionEntity, err := uc.gateways.CreateSession(
-		ctx, userID,
+		ctx, userEntity.ID,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("create session: %w", err)
