@@ -39,6 +39,13 @@ type Unsubscriber[Event any] interface {
 	) error
 }
 
+type Publisher[Event any] interface {
+	Publish(
+		ctx context.Context,
+		event *Event,
+	) error
+}
+
 type SubscriptionID string
 
 type SubscriptionCreator interface {
