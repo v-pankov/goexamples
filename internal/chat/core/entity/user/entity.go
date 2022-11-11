@@ -16,11 +16,3 @@ type (
 	ID   string
 	Name string
 )
-
-func (id ID) String() string {
-	return string(id)
-}
-
-func (n Name) String() string {
-	return string(n)
-}
