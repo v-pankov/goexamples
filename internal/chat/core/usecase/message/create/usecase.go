@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/vdrpkv/goexamples/internal/chat/core/entity/session"
+	"github.com/vdrpkv/goexamples/internal/chat/core/entity/user"
 	"github.com/vdrpkv/goexamples/internal/chat/core/usecase/message/create/model/request"
 	"github.com/vdrpkv/goexamples/internal/chat/core/usecase/message/create/model/response"
 )
@@ -42,7 +42,7 @@ func (uc useCase) Do(
 ) {
 	messageEntity, err := uc.gateways.CreateMessage(
 		ctx,
-		session.ID(requestCtx.SessionID),
+		user.ID(requestCtx.UserID),
 		requestModel.MessageText,
 	)
 	if err != nil {
@@ -52,7 +52,6 @@ func (uc useCase) Do(
 	return &response.Model{
 		Message: response.Message{
 			UserID:      response.UserID(requestCtx.UserID),
-			SessionID:   response.SessionID(messageEntity.SessionID),
 			MessageID:   response.MessageID(messageEntity.ID),
 			MessageText: response.MessageText(messageEntity.Text),
 			CreatedAt:   messageEntity.CreatedAt,

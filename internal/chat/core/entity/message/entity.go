@@ -1,18 +1,18 @@
 package message
 
 import (
-	"github.com/vdrpkv/goexamples/internal/chat/core/entity/session"
 	"github.com/vdrpkv/goexamples/internal/pkg/entity"
+
+	"github.com/vdrpkv/goexamples/internal/chat/core/entity/user"
 )
 
 type (
 	Entity struct {
 		entity.Entity
 
-		ID        ID
-		SessionID session.ID
-
-		Text string
+		ID     ID
+		UserID user.ID
+		Text   string
 	}
 
 	ID int64

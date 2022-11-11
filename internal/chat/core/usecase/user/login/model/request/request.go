@@ -1,5 +1,6 @@
 package request
 
+// Context is a part of usecase request model consideted valid
 type Context struct {
 }
 

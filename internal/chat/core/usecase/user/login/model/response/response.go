@@ -1,11 +1,9 @@
 package response
 
 type Model struct {
-	UserID    UserID
-	SessionID SessionID
+	UserID UserID
 }
 
 type (
-	UserID    string
-	SessionID string
+	UserID string
 )

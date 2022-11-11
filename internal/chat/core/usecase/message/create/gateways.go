@@ -4,13 +4,13 @@ import (
 	"context"
 
 	"github.com/vdrpkv/goexamples/internal/chat/core/entity/message"
-	"github.com/vdrpkv/goexamples/internal/chat/core/entity/session"
+	"github.com/vdrpkv/goexamples/internal/chat/core/entity/user"
 )
 
 type Gateways interface {
 	CreateMessage(
 		ctx context.Context,
-		sessionID session.ID,
+		userID user.ID,
 		messageText string,
 	) (
 		*message.Entity,

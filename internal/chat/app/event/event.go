@@ -13,13 +13,11 @@ type NewMessage struct {
 
 type basicEvent struct {
 	UserID    UserID
-	SessionID SessionID
 	Timestamp time.Time
 }
 
 type (
 	UserID          string
-	SessionID       string
 	MessageID       int64
 	MessageContents []byte
 )
