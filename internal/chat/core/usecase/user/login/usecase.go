@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/vdrpkv/goexamples/internal/chat/entity/user"
-	"github.com/vdrpkv/goexamples/internal/chat/usecase/user/login/model/request"
-	"github.com/vdrpkv/goexamples/internal/chat/usecase/user/login/model/response"
+	"github.com/vdrpkv/goexamples/internal/chat/core/entity/user"
+	"github.com/vdrpkv/goexamples/internal/chat/core/usecase/user/login/model/request"
+	"github.com/vdrpkv/goexamples/internal/chat/core/usecase/user/login/model/response"
 )
 
 type UseCase interface {

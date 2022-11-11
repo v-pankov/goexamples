@@ -3,7 +3,7 @@ package logout
 import (
 	"context"
 
-	"github.com/vdrpkv/goexamples/internal/chat/entity/session"
+	"github.com/vdrpkv/goexamples/internal/chat/core/entity/session"
 )
 
 type Gateways interface {

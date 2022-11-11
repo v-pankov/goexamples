@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/vdrpkv/goexamples/internal/chat/entity/session"
-	"github.com/vdrpkv/goexamples/internal/chat/usecase/user/logout/model/request"
-	"github.com/vdrpkv/goexamples/internal/chat/usecase/user/logout/model/response"
+	"github.com/vdrpkv/goexamples/internal/chat/core/entity/session"
+	"github.com/vdrpkv/goexamples/internal/chat/core/usecase/user/logout/model/request"
+	"github.com/vdrpkv/goexamples/internal/chat/core/usecase/user/logout/model/response"
 )
 
 type UseCase interface {

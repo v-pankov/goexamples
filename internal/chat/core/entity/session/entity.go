@@ -1,7 +1,7 @@
 package session
 
 import (
-	"github.com/vdrpkv/goexamples/internal/chat/entity/user"
+	"github.com/vdrpkv/goexamples/internal/chat/core/entity/user"
 	"github.com/vdrpkv/goexamples/internal/pkg/entity"
 )
 

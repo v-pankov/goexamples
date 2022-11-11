@@ -1,7 +1,7 @@
 package message
 
 import (
-	"github.com/vdrpkv/goexamples/internal/chat/entity/session"
+	"github.com/vdrpkv/goexamples/internal/chat/core/entity/session"
 	"github.com/vdrpkv/goexamples/internal/pkg/entity"
 )
 

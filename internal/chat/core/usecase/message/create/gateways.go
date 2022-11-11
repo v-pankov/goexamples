@@ -3,8 +3,8 @@ package create
 import (
 	"context"
 
-	"github.com/vdrpkv/goexamples/internal/chat/entity/message"
-	"github.com/vdrpkv/goexamples/internal/chat/entity/session"
+	"github.com/vdrpkv/goexamples/internal/chat/core/entity/message"
+	"github.com/vdrpkv/goexamples/internal/chat/core/entity/session"
 )
 
 type Gateways interface {
