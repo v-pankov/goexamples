@@ -6,8 +6,8 @@ import (
 
 	"github.com/vdrpkv/goexamples/internal/chat/entity"
 	"github.com/vdrpkv/goexamples/internal/chat/usecase"
-	"github.com/vdrpkv/goexamples/internal/chat/usecase/message/create/request"
-	"github.com/vdrpkv/goexamples/internal/chat/usecase/message/create/response"
+	"github.com/vdrpkv/goexamples/internal/chat/usecase/message/create/usecase/request"
+	"github.com/vdrpkv/goexamples/internal/chat/usecase/message/create/usecase/response"
 )
 
 func (uc useCase) Do(
