@@ -8,13 +8,11 @@ type Model struct {
 
 type (
 	Message struct {
-		UserID      UserID
 		MessageID   MessageID
 		MessageText MessageText
 		CreatedAt   time.Time
 	}
 
-	UserID      string
 	MessageID   int64
 	MessageText string
 )
