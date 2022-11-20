@@ -7,7 +7,7 @@ import (
 
 	"github.com/vdrpkv/goexamples/internal/chat/entity"
 
-	usecaseMessageCreate "github.com/vdrpkv/goexamples/internal/chat/usecase/message/create"
+	usecaseMessageCreate "github.com/vdrpkv/goexamples/internal/chat/usecase/message/create/usecase"
 )
 
 type InMem struct {
