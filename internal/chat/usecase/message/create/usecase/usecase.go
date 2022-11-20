@@ -18,7 +18,7 @@ func (uc useCase) Do(
 	*response.Model,
 	error,
 ) {
-	message, err := uc.gateways.CreateMessage(
+	message, err := uc.repository.CreateMessage(
 		ctx,
 		requestModel.MessageContents,
 	)
@@ -33,7 +33,7 @@ func (uc useCase) Do(
 	}, nil
 }
 
-type Gateways interface {
+type Repository interface {
 	CreateMessage(
 		ctx context.Context,
 		messageContents entity.MessageContents,
@@ -44,13 +44,13 @@ type Gateways interface {
 }
 
 type useCase struct {
-	gateways Gateways
+	repository Repository
 }
 
 func New(
-	gateways Gateways,
+	repository Repository,
 ) usecase.UseCase[request.Context, request.Model, response.Model] {
 	return useCase{
-		gateways: gateways,
+		repository: repository,
 	}
 }

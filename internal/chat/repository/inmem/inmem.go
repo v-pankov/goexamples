@@ -7,7 +7,7 @@ import (
 
 	"github.com/vdrpkv/goexamples/internal/chat/entity"
 
-	usecaseMessageCreateGateways "github.com/vdrpkv/goexamples/internal/chat/usecase/message/create/gateways"
+	usecaseMessageCreate "github.com/vdrpkv/goexamples/internal/chat/usecase/message/create/usecase"
 )
 
 type InMem struct {
@@ -22,7 +22,7 @@ func New() *InMem {
 	}
 }
 
-func (inmem *InMem) UsecaseMessageCreateRepository() usecaseMessageCreateGateways.Repository {
+func (inmem *InMem) UsecaseMessageCreateRepository() usecaseMessageCreate.Repository {
 	return uescaseMessageCreateRepositoryAdapter{inmem}
 }
 
