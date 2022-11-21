@@ -37,15 +37,25 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
+type HubServer interface {
+	Register(HubClient)
+	Unregister(HubClient)
+	Broadcast([]byte)
+}
+
 // Client is a middleman between the websocket connection and the hub.
 type Client struct {
-	hub *Hub
+	hub HubServer
 
 	// The websocket connection.
 	conn *websocket.Conn
 
 	// Buffered channel of outbound messages.
 	send chan []byte
+}
+
+func (c *Client) Line() chan []byte {
+	return c.send
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -55,7 +65,7 @@ type Client struct {
 // reads from this goroutine.
 func (c *Client) readPump() {
 	defer func() {
-		c.hub.unregister <- c
+		c.hub.Unregister(c)
 		c.conn.Close()
 	}()
 	c.conn.SetReadLimit(maxMessageSize)
@@ -70,7 +80,7 @@ func (c *Client) readPump() {
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
-		c.hub.broadcast <- message
+		c.hub.Broadcast(message)
 	}
 }
 
@@ -121,14 +131,14 @@ func (c *Client) writePump() {
 }
 
 // serveWs handles websocket requests from the peer.
-func ServeWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
+func ServeWs(hub HubServer, w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
-	client.hub.register <- client
+	client.hub.Register(client)
 
 	// Allow collection of memory referenced by the caller by doing all work in
 	// new goroutines.

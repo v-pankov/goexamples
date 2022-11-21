@@ -4,28 +4,42 @@
 
 package chat
 
-// Hub maintains the set of active clients and broadcasts messages to the
-// clients.
+type HubClient interface {
+	Line() chan []byte
+}
+
 type Hub struct {
 	// Registered clients.
-	clients map[*Client]bool
+	clients map[HubClient]bool
 
 	// Inbound messages from the clients.
 	broadcast chan []byte
 
 	// Register requests from the clients.
-	register chan *Client
+	register chan HubClient
 
 	// Unregister requests from clients.
-	unregister chan *Client
+	unregister chan HubClient
+}
+
+func (h *Hub) Register(c HubClient) {
+	h.register <- c
+}
+
+func (h *Hub) Unregister(c HubClient) {
+	h.unregister <- c
+}
+
+func (h *Hub) Broadcast(msg []byte) {
+	h.broadcast <- msg
 }
 
 func NewHub() *Hub {
 	return &Hub{
 		broadcast:  make(chan []byte),
-		register:   make(chan *Client),
-		unregister: make(chan *Client),
-		clients:    make(map[*Client]bool),
+		register:   make(chan HubClient),
+		unregister: make(chan HubClient),
+		clients:    make(map[HubClient]bool),
 	}
 }
 
@@ -37,14 +51,14 @@ func (h *Hub) Run() {
 		case client := <-h.unregister:
 			if _, ok := h.clients[client]; ok {
 				delete(h.clients, client)
-				close(client.send)
+				close(client.Line())
 			}
 		case message := <-h.broadcast:
 			for client := range h.clients {
 				select {
-				case client.send <- message:
+				case client.Line() <- message:
 				default:
-					close(client.send)
+					close(client.Line())
 					delete(h.clients, client)
 				}
 			}
