@@ -7,21 +7,22 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/vdrpkv/goexamples/internal/chat/core"
-	"github.com/vdrpkv/goexamples/internal/chat/infrastructure/pubsub"
-	"github.com/vdrpkv/goexamples/internal/chat/infrastructure/websocket"
+	appIO "github.com/vdrpkv/goexamples/internal/chat/app/io"
 
-	inmemPubSub "github.com/vdrpkv/goexamples/internal/chat/infrastructure/pubsub/inmem"
-	inmemRepo "github.com/vdrpkv/goexamples/internal/chat/infrastructure/repository/inmem"
+	"github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/pubsub"
+	"github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/websocket"
 
-	sendMsgController "github.com/vdrpkv/goexamples/internal/chat/app/message/send/controller"
-	sendMsgPresenter "github.com/vdrpkv/goexamples/internal/chat/app/message/send/presenter"
-	sendMsgViewer "github.com/vdrpkv/goexamples/internal/chat/app/message/send/viewer"
-	sendMsgInmemRepo "github.com/vdrpkv/goexamples/internal/chat/infrastructure/repository/inmem/message/send"
-	sendMsgUsecase "github.com/vdrpkv/goexamples/internal/chat/usecase/message/send"
+	inmemPubSub "github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/pubsub/inmem"
+	inmemRepo "github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/repository/inmem"
 
-	recvMsgController "github.com/vdrpkv/goexamples/internal/chat/app/message/recv/controller"
-	recvMsgViewer "github.com/vdrpkv/goexamples/internal/chat/app/message/recv/viewer"
+	sendMsgInmemRepo "github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/repository/inmem/message/send"
+	sendMsgController "github.com/vdrpkv/goexamples/internal/chat/app/usecase/message/send/controller"
+	sendMsgPresenter "github.com/vdrpkv/goexamples/internal/chat/app/usecase/message/send/presenter"
+	sendMsgViewer "github.com/vdrpkv/goexamples/internal/chat/app/usecase/message/send/viewer"
+	sendMsgUsecase "github.com/vdrpkv/goexamples/internal/chat/core/usecase/message/send"
+
+	recvMsgController "github.com/vdrpkv/goexamples/internal/chat/app/usecase/message/recv/controller"
+	recvMsgViewer "github.com/vdrpkv/goexamples/internal/chat/app/usecase/message/recv/viewer"
 )
 
 var addr = flag.String("addr", ":8080", "http service address")
@@ -101,8 +102,8 @@ func serveWs(
 
 func setupSendMessageUsecase(
 	ctx context.Context,
-	receiver core.Receiver,
-	sender core.Sender,
+	receiver appIO.Receiver,
+	sender appIO.Sender,
 	repo *inmemRepo.InMem,
 ) {
 	controller := sendMsgController.Controller{
@@ -123,15 +124,15 @@ func setupSendMessageUsecase(
 	}
 
 	// ignore context cancellation error: it does not matter how it was cancelled
-	core.LoopReceiver(ctx, receiver, func(message []byte) {
+	appIO.LoopReceiver(ctx, receiver, func(message []byte) {
 		controller.HandleMessage(ctx, message)
 	})
 }
 
 func setupRecvMessageUsecase(
 	ctx context.Context,
-	receiver core.Receiver,
-	sender core.Sender,
+	receiver appIO.Receiver,
+	sender appIO.Sender,
 ) {
 	controller := recvMsgController.Controller{
 		Viewer: recvMsgViewer.Viewer{
@@ -140,7 +141,7 @@ func setupRecvMessageUsecase(
 	}
 
 	// ignore context cancellation error: it does not matter how it was cancelled
-	_ = core.LoopReceiver(ctx, receiver, func(message []byte) {
+	_ = appIO.LoopReceiver(ctx, receiver, func(message []byte) {
 		controller.HandleMessage(ctx, message)
 	})
 }
