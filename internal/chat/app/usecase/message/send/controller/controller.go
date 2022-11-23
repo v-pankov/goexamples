@@ -11,6 +11,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/vdrpkv/goexamples/internal/chat/app/controller"
 	"github.com/vdrpkv/goexamples/internal/chat/core/usecase"
 	"github.com/vdrpkv/goexamples/internal/chat/core/usecase/message/send/request"
 )
@@ -21,7 +22,9 @@ type Controller struct {
 	Interactor usecase.Interactor[request.Model]
 }
 
-func (c *Controller) HandleMessage(ctx context.Context, message []byte) error {
+var _ controller.Controller = Controller{}
+
+func (c Controller) HandleMessage(ctx context.Context, message []byte) error {
 	if err := c.Interactor.Interact(
 		ctx,
 		&request.Model{

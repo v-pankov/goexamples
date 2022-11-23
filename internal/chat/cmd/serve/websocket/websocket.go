@@ -6,13 +6,15 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/vdrpkv/goexamples/internal/chat/app"
+	"github.com/vdrpkv/goexamples/internal/chat/app/controller"
 	"github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/pubsub"
 	"github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/websocket"
 
 	inmemRepo "github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/repository/inmem"
 
-	usecaseMsgRecv "github.com/vdrpkv/goexamples/internal/chat/cmd/usecase/message/recv"
-	usecaseMsgSend "github.com/vdrpkv/goexamples/internal/chat/cmd/usecase/message/send"
+	msgRecvController "github.com/vdrpkv/goexamples/internal/chat/cmd/controller/message/recv"
+	msgSendController "github.com/vdrpkv/goexamples/internal/chat/cmd/controller/message/send"
 )
 
 func Handler(
@@ -36,19 +38,29 @@ func Handler(
 		return
 	}
 
-	wg.Add(1)
-	go func() {
-		usecaseMsgSend.Run(
-			ctx, wsHandler, pub, inmemRepo,
-		)
-		wg.Done()
-	}()
-
-	wg.Add(1)
-	go func() {
-		usecaseMsgRecv.Run(
-			ctx, sub, wsHandler,
-		)
-		wg.Done()
-	}()
+	for _, loop := range []controller.Loop{
+		{
+			Receiver: wsHandler,
+			Controller: msgSendController.New(
+				ctx, pub, inmemRepo,
+			),
+		},
+		{
+			Receiver: sub,
+			Controller: msgRecvController.New(
+				ctx, wsHandler,
+			),
+		},
+	} {
+		wg.Add(1)
+		go func(loop controller.Loop) {
+			// ignore context cancellation error
+			_ = loop.Run(ctx, app.ErrorHandlerFunc(
+				func(ctx context.Context, err error) {
+					log.Println(err)
+				}),
+			)
+			wg.Done()
+		}(loop)
+	}
 }

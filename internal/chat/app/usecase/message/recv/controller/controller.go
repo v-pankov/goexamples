@@ -4,13 +4,17 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
+	"github.com/vdrpkv/goexamples/internal/chat/app/controller"
 )
 
 type Controller struct {
 	Viewer ModelViewer
 }
 
-func (c *Controller) HandleMessage(ctx context.Context, message []byte) error {
+var _ controller.Controller = Controller{}
+
+func (c Controller) HandleMessage(ctx context.Context, message []byte) error {
 	var input struct {
 		MessageID       int64  `json:"id"`
 		MessageContents []byte `json:"contents"`

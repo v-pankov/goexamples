@@ -10,7 +10,7 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	"github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/transport"
+	"github.com/vdrpkv/goexamples/internal/chat/app/transport"
 )
 
 const (

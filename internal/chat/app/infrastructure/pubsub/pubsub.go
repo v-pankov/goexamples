@@ -1,6 +1,6 @@
 package pubsub
 
-import "github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/transport"
+import "github.com/vdrpkv/goexamples/internal/chat/app/transport"
 
 type (
 	Sub interface {

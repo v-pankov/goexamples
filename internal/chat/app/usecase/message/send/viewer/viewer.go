@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/transport"
+	"github.com/vdrpkv/goexamples/internal/chat/app/transport"
 	"github.com/vdrpkv/goexamples/internal/chat/app/usecase/message/send/presenter"
 )
 
