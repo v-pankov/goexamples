@@ -5,39 +5,40 @@ import (
 
 	"github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/transport"
 
-	"github.com/vdrpkv/goexamples/internal/chat/core/usecase"
+	coreUsecase "github.com/vdrpkv/goexamples/internal/chat/core/usecase"
 
-	inmemRepo "github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/repository/inmem"
+	appRepoInmem "github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/repository/inmem"
+	appRepoInmemUsecaseAdapter "github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/repository/inmem/usecase/message/send"
 
-	sendMsgInmemRepo "github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/repository/inmem/usecase/message/send"
-	sendMsgController "github.com/vdrpkv/goexamples/internal/chat/app/usecase/message/send/controller"
-	sendMsgPresenter "github.com/vdrpkv/goexamples/internal/chat/app/usecase/message/send/presenter"
-	sendMsgViewer "github.com/vdrpkv/goexamples/internal/chat/app/usecase/message/send/viewer"
-	sendMsgUsecase "github.com/vdrpkv/goexamples/internal/chat/core/usecase/message/send"
-	sendMsgUsecaseReq "github.com/vdrpkv/goexamples/internal/chat/core/usecase/message/send/request"
-	sendMsgUsecaseRsp "github.com/vdrpkv/goexamples/internal/chat/core/usecase/message/send/response"
+	appController "github.com/vdrpkv/goexamples/internal/chat/app/usecase/message/send/controller"
+	appPresenter "github.com/vdrpkv/goexamples/internal/chat/app/usecase/message/send/presenter"
+	appViewer "github.com/vdrpkv/goexamples/internal/chat/app/usecase/message/send/viewer"
+
+	usecase "github.com/vdrpkv/goexamples/internal/chat/core/usecase/message/send"
+	usecaseRequest "github.com/vdrpkv/goexamples/internal/chat/core/usecase/message/send/request"
+	usecaseResponse "github.com/vdrpkv/goexamples/internal/chat/core/usecase/message/send/response"
 )
 
 func Run(
 	ctx context.Context,
 	receiver transport.Receiver,
 	sender transport.Sender,
-	repo *inmemRepo.InMem,
+	repo *appRepoInmem.InMem,
 ) {
-	controller := sendMsgController.Controller{
-		Interactor: usecase.NewInteractor[
-			sendMsgUsecaseReq.Model,
-			sendMsgUsecaseRsp.Model,
+	controller := appController.Controller{
+		Interactor: coreUsecase.NewInteractor[
+			usecaseRequest.Model,
+			usecaseResponse.Model,
 		](
-			sendMsgUsecase.Processor{
-				Gateways: sendMsgUsecase.Gateways{
-					Repository: sendMsgInmemRepo.Adapter{
+			usecase.Processor{
+				Gateways: usecase.Gateways{
+					Repository: appRepoInmemUsecaseAdapter.Adapter{
 						InMem: repo,
 					},
 				},
 			},
-			sendMsgPresenter.Presenter{
-				ModelViewer: sendMsgViewer.Viewer{
+			appPresenter.Presenter{
+				ModelViewer: appViewer.Viewer{
 					Sender: sender,
 				},
 			},
