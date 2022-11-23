@@ -1,10 +1,13 @@
-all: clean build-chat
+all: prepare-bin clean-chat build-chat
 
-clean:
-	rm -f chat
+clean-chat:
+	rm -f bin/chat
 
 build-chat:
-	go build -o chat ./cmd/chat
+	go build -o bin/chat ./cmd/chat
+
+prepare-bin:
+	mkdir -p bin
 
 run-chat:
 	go run ./cmd/chat/main.go
