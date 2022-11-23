@@ -5,13 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/transport"
 	"github.com/vdrpkv/goexamples/internal/chat/app/usecase/message/send/presenter"
-
-	appIO "github.com/vdrpkv/goexamples/internal/chat/app/io"
 )
 
 type Viewer struct {
-	Sender appIO.Sender
+	Sender transport.Sender
 }
 
 func (v Viewer) ViewModel(ctx context.Context, model *presenter.ViewModel) error {

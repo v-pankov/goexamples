@@ -5,13 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/transport"
 	"github.com/vdrpkv/goexamples/internal/chat/app/usecase/message/recv/controller"
-
-	appIO "github.com/vdrpkv/goexamples/internal/chat/app/io"
 )
 
 type Viewer struct {
-	Sender appIO.Sender
+	Sender transport.Sender
 }
 
 var _ controller.ModelViewer = Viewer{}

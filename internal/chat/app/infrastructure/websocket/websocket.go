@@ -10,7 +10,7 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	appIO "github.com/vdrpkv/goexamples/internal/chat/app/io"
+	"github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/transport"
 )
 
 const (
@@ -217,6 +217,6 @@ func (h *Handler) Send(_ context.Context, bytes []byte) error {
 }
 
 var (
-	_ appIO.Receiver = (*Handler)(nil)
-	_ appIO.Sender   = (*Handler)(nil)
+	_ transport.Receiver = (*Handler)(nil)
+	_ transport.Sender   = (*Handler)(nil)
 )

@@ -3,7 +3,7 @@ package recv
 import (
 	"context"
 
-	appIO "github.com/vdrpkv/goexamples/internal/chat/app/io"
+	"github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/transport"
 
 	recvMsgController "github.com/vdrpkv/goexamples/internal/chat/app/usecase/message/recv/controller"
 	recvMsgViewer "github.com/vdrpkv/goexamples/internal/chat/app/usecase/message/recv/viewer"
@@ -11,8 +11,8 @@ import (
 
 func Run(
 	ctx context.Context,
-	receiver appIO.Receiver,
-	sender appIO.Sender,
+	receiver transport.Receiver,
+	sender transport.Sender,
 ) {
 	controller := recvMsgController.Controller{
 		Viewer: recvMsgViewer.Viewer{
@@ -21,7 +21,7 @@ func Run(
 	}
 
 	// ignore context cancellation error: it does not matter how it was cancelled
-	_ = appIO.LoopReceiver(ctx, receiver, func(message []byte) {
+	_ = transport.LoopReceiver(ctx, receiver, func(message []byte) {
 		controller.HandleMessage(ctx, message)
 	})
 }

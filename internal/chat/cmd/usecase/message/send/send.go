@@ -3,7 +3,7 @@ package send
 import (
 	"context"
 
-	appIO "github.com/vdrpkv/goexamples/internal/chat/app/io"
+	"github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/transport"
 
 	inmemRepo "github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/repository/inmem"
 
@@ -16,8 +16,8 @@ import (
 
 func Run(
 	ctx context.Context,
-	receiver appIO.Receiver,
-	sender appIO.Sender,
+	receiver transport.Receiver,
+	sender transport.Sender,
 	repo *inmemRepo.InMem,
 ) {
 	controller := sendMsgController.Controller{
@@ -38,7 +38,7 @@ func Run(
 	}
 
 	// ignore context cancellation error: it does not matter how it was cancelled
-	appIO.LoopReceiver(ctx, receiver, func(message []byte) {
+	transport.LoopReceiver(ctx, receiver, func(message []byte) {
 		controller.HandleMessage(ctx, message)
 	})
 }

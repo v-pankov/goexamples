@@ -1,15 +1,15 @@
 package pubsub
 
-import appIO "github.com/vdrpkv/goexamples/internal/chat/app/io"
+import "github.com/vdrpkv/goexamples/internal/chat/app/infrastructure/transport"
 
 type (
 	Sub interface {
-		appIO.Receiver
+		transport.Receiver
 		Unsubscribe() error
 	}
 )
 
 type Pub interface {
-	appIO.Sender
+	transport.Sender
 	Subscribe() (Sub, error)
 }
