@@ -120,9 +120,13 @@ func setupSendMessageUsecase(
 				log.Println(err)
 			}),
 		)
-		controller = usecaseMessageSend.NewController(receiver, interactor)
+		controller = usecaseMessageSend.NewController(interactor)
 	)
-	controller.Run(ctx)
+
+	// ignore context cancellation error: it does not matter how it was cancelled
+	core.LoopReceiver(ctx, receiver, func(message []byte) {
+		controller.HandleMessage(ctx, message)
+	})
 }
 
 func setupRecvMessageUsecase(
@@ -140,7 +144,6 @@ func setupRecvMessageUsecase(
 			),
 		)
 		controller = usecaseMessageRecv.NewController(
-			receiver,
 			viewer,
 			core.ErrorHandlerFunc(
 				func(ctx context.Context, err error) {
@@ -149,5 +152,9 @@ func setupRecvMessageUsecase(
 			),
 		)
 	)
-	controller.Run(ctx)
+
+	// ignore context cancellation error: it does not matter how it was cancelled
+	_ = core.LoopReceiver(ctx, receiver, func(message []byte) {
+		controller.HandleMessage(ctx, message)
+	})
 }
