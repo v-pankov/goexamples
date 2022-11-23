@@ -7,18 +7,16 @@ import (
 	"github.com/vdrpkv/goexamples/internal/chat/entity"
 	"github.com/vdrpkv/goexamples/internal/chat/infrastructure/repository/inmem"
 
-	usecaseMessageSend "github.com/vdrpkv/goexamples/internal/chat/usecase/message/send"
+	usecaseMessageSendGateways "github.com/vdrpkv/goexamples/internal/chat/usecase/message/send/gateways"
 )
 
-func New(inmem *inmem.InMem) usecaseMessageSend.Repository {
-	return adapter{inmem}
-}
-
-type adapter struct {
+type Adapter struct {
 	*inmem.InMem
 }
 
-func (a adapter) CreateMessage(
+var _ usecaseMessageSendGateways.Repository = Adapter{}
+
+func (a Adapter) CreateMessage(
 	ctx context.Context,
 	messageContents entity.MessageContents,
 ) (
@@ -31,7 +29,7 @@ func (a adapter) CreateMessage(
 	return msg, err
 }
 
-func (a adapter) createMessage(
+func (a Adapter) createMessage(
 	_ context.Context,
 	messageContents entity.MessageContents,
 ) (

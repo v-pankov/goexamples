@@ -11,13 +11,17 @@ import (
 	"github.com/vdrpkv/goexamples/internal/chat/infrastructure/pubsub"
 	"github.com/vdrpkv/goexamples/internal/chat/infrastructure/websocket"
 
-	pubsubInmem "github.com/vdrpkv/goexamples/internal/chat/infrastructure/pubsub/inmem"
-
+	inmemPubSub "github.com/vdrpkv/goexamples/internal/chat/infrastructure/pubsub/inmem"
 	inmemRepo "github.com/vdrpkv/goexamples/internal/chat/infrastructure/repository/inmem"
-	usecaseMessageSendInmemRepo "github.com/vdrpkv/goexamples/internal/chat/infrastructure/repository/inmem/message/send"
 
-	usecaseMessageRecv "github.com/vdrpkv/goexamples/internal/chat/usecase/message/recv"
-	usecaseMessageSend "github.com/vdrpkv/goexamples/internal/chat/usecase/message/send"
+	sendMsgController "github.com/vdrpkv/goexamples/internal/chat/app/message/send/controller"
+	sendMsgPresenter "github.com/vdrpkv/goexamples/internal/chat/app/message/send/presenter"
+	sendMsgViewer "github.com/vdrpkv/goexamples/internal/chat/app/message/send/viewer"
+	sendMsgInmemRepo "github.com/vdrpkv/goexamples/internal/chat/infrastructure/repository/inmem/message/send"
+	sendMsgUsecase "github.com/vdrpkv/goexamples/internal/chat/usecase/message/send"
+
+	recvMsgController "github.com/vdrpkv/goexamples/internal/chat/app/message/recv/controller"
+	recvMsgViewer "github.com/vdrpkv/goexamples/internal/chat/app/message/recv/viewer"
 )
 
 var addr = flag.String("addr", ":8080", "http service address")
@@ -27,7 +31,7 @@ func Run() {
 
 	ctx := context.Background()
 
-	pub := pubsubInmem.New()
+	pub := inmemPubSub.New()
 	go pub.Run(ctx)
 
 	inmemRepo := inmemRepo.New()
@@ -101,27 +105,22 @@ func setupSendMessageUsecase(
 	sender core.Sender,
 	repo *inmemRepo.InMem,
 ) {
-	var (
-		usecaseRepo = usecaseMessageSendInmemRepo.New(repo)
-		processor   = usecaseMessageSend.NewProcessor(usecaseRepo)
-		viewer      = usecaseMessageSend.NewViewer(
-			sender,
-			core.ErrorHandlerFunc(
-				func(ctx context.Context, err error) {
-					log.Println(err)
+	controller := sendMsgController.Controller{
+		Interactor: sendMsgUsecase.Interactor{
+			Processor: sendMsgUsecase.Processor{
+				Gateways: sendMsgUsecase.Gateways{
+					Repository: sendMsgInmemRepo.Adapter{
+						InMem: repo,
+					},
 				},
-			),
-		)
-		presenter  = usecaseMessageSend.NewPresenter(viewer)
-		interactor = usecaseMessageSend.NewInteractor(
-			processor,
-			presenter,
-			core.ErrorHandlerFunc(func(ctx context.Context, err error) {
-				log.Println(err)
-			}),
-		)
-		controller = usecaseMessageSend.NewController(interactor)
-	)
+			},
+			Presenter: sendMsgPresenter.Presenter{
+				ModelViewer: sendMsgViewer.Viewer{
+					Sender: sender,
+				},
+			},
+		},
+	}
 
 	// ignore context cancellation error: it does not matter how it was cancelled
 	core.LoopReceiver(ctx, receiver, func(message []byte) {
@@ -134,24 +133,11 @@ func setupRecvMessageUsecase(
 	receiver core.Receiver,
 	sender core.Sender,
 ) {
-	var (
-		viewer = usecaseMessageRecv.NewViewer(
-			sender,
-			core.ErrorHandlerFunc(
-				func(ctx context.Context, err error) {
-					log.Println(err)
-				},
-			),
-		)
-		controller = usecaseMessageRecv.NewController(
-			viewer,
-			core.ErrorHandlerFunc(
-				func(ctx context.Context, err error) {
-					log.Println(err)
-				},
-			),
-		)
-	)
+	controller := recvMsgController.Controller{
+		Viewer: recvMsgViewer.Viewer{
+			Sender: sender,
+		},
+	}
 
 	// ignore context cancellation error: it does not matter how it was cancelled
 	_ = core.LoopReceiver(ctx, receiver, func(message []byte) {
