@@ -5,7 +5,7 @@ import (
 )
 
 type Presenter interface {
-	Present(context.Context, *Response)
+	Present(context.Context, *ResponseModel)
 }
 
 func NewPresenter(
@@ -20,7 +20,7 @@ type presenter struct {
 	viewer Viewer
 }
 
-func (p presenter) Present(ctx context.Context, rsp *Response) {
+func (p presenter) Present(ctx context.Context, rsp *ResponseModel) {
 	p.viewer.View(
 		ctx,
 		&ViewModel{

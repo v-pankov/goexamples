@@ -19,7 +19,7 @@ func NewController(
 func (c *Controller) HandleMessage(ctx context.Context, message []byte) {
 	c.interactor.Interact(
 		ctx,
-		&Request{
+		&RequestModel{
 			MessageContents: message,
 		},
 	)

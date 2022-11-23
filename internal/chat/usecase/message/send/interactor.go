@@ -7,7 +7,7 @@ import (
 )
 
 type Interactor interface {
-	Interact(context.Context, *Request)
+	Interact(context.Context, *RequestModel)
 }
 
 func NewInteractor(
@@ -28,7 +28,7 @@ type interactor struct {
 	errorHandler core.ErrorHandler
 }
 
-func (i interactor) Interact(ctx context.Context, req *Request) {
+func (i interactor) Interact(ctx context.Context, req *RequestModel) {
 	rsp, err := i.processor.Process(ctx, req)
 	if err != nil {
 		i.errorHandler.HandleError(ctx, err)

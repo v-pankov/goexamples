@@ -6,18 +6,18 @@ import (
 	"time"
 )
 
-type Request struct {
+type RequestModel struct {
 	MessageContents []byte
 }
 
-type Response struct {
+type ResponseModel struct {
 	MessageID       int64
 	MessageContents []byte
 	CreatedAt       time.Time
 }
 
 type Processor interface {
-	Process(context.Context, *Request) (*Response, error)
+	Process(context.Context, *RequestModel) (*ResponseModel, error)
 }
 
 type processor struct {
@@ -32,7 +32,7 @@ func NewProcessor(
 	}
 }
 
-func (p processor) Process(ctx context.Context, requestModel *Request) (*Response, error) {
+func (p processor) Process(ctx context.Context, requestModel *RequestModel) (*ResponseModel, error) {
 	message, err := p.repository.CreateMessage(
 		ctx,
 		requestModel.MessageContents,
@@ -41,7 +41,7 @@ func (p processor) Process(ctx context.Context, requestModel *Request) (*Respons
 		return nil, fmt.Errorf("create message: %w", err)
 	}
 
-	return &Response{
+	return &ResponseModel{
 		MessageID:       int64(message.ID),
 		MessageContents: message.Contents,
 		CreatedAt:       message.CreatedAt,
