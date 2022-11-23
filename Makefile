@@ -1,7 +1,7 @@
 all: clean build-chat
 
 clean:
-	rm -f browurls
+	rm -f chat
 
 build-chat:
 	go build -o chat ./cmd/chat
