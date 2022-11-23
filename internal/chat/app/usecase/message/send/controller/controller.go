@@ -11,14 +11,14 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/vdrpkv/goexamples/internal/chat/core/usecase/message/send/interactor"
+	"github.com/vdrpkv/goexamples/internal/chat/core/usecase"
 	"github.com/vdrpkv/goexamples/internal/chat/core/usecase/message/send/request"
 )
 
 // Controller is a humble object whose role is to parse user input, form
 // send message usecase request and interact with business logic.
 type Controller struct {
-	Interactor interactor.Interactor
+	Interactor usecase.Interactor[request.Model]
 }
 
 func (c *Controller) HandleMessage(ctx context.Context, message []byte) error {

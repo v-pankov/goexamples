@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/vdrpkv/goexamples/internal/chat/core/usecase"
 	"github.com/vdrpkv/goexamples/internal/chat/core/usecase/message/send/response"
 )
 
 type Presenter struct {
 	ModelViewer ModelViewer
 }
+
+var _ usecase.Presenter[response.Model] = Presenter{}
 
 func (p Presenter) Present(ctx context.Context, rsp *response.Model) error {
 	if err := p.ModelViewer.ViewModel(
